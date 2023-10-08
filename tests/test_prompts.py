@@ -1,6 +1,5 @@
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
-from loguru import logger
 from llmgraph.library import prompts
 
 

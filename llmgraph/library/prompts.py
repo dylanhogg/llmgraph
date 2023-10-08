@@ -1,4 +1,3 @@
-from loguru import logger
 from omegaconf import OmegaConf
 
 

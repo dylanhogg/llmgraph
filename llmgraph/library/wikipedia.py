@@ -1,5 +1,4 @@
 import requests
-from bs4 import BeautifulSoup
 from joblib import Memory
 from loguru import logger
 from tenacity import retry, stop_after_attempt, wait_exponential

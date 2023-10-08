@@ -4,10 +4,7 @@ from pathlib import Path
 from typing import Optional
 from urllib.parse import unquote
 
-import matplotlib.pyplot as plt
 import networkx as nx
-import requests
-from bs4 import BeautifulSoup
 from joblib import Memory
 from loguru import logger
 from pyvis.network import Network

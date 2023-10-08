@@ -1,8 +1,4 @@
-import requests
-import pytest
-from bs4 import BeautifulSoup
-from loguru import logger
-from llmgraph.library import utils, wikipedia
+from llmgraph.library import wikipedia
 
 
 def test_restapi_no_redirect_page():

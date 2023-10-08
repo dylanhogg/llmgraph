@@ -5,14 +5,12 @@ build:
 	poetry build
 
 publish:
-	# https://python-poetry.org/docs/repositories/#configuring-credentials
 	# One time: poetry config pypi-token.pypi <your-pypi-token>
 	poetry publish --build
 
 publish-test:
-	# https://python-poetry.org/docs/repositories/#configuring-credentials
 	# One time: poetry config repositories.test-pypi https://test.pypi.org/legacy/
-	# One time: poetry config pypi-token.test-pypi pypi-mytesttoken
+	# One time: poetry config pypi-token.test-pypi <your-test-pypi-token>
 	poetry publish -r test-pypi
 
 test-install-from-pypi:
@@ -37,13 +35,21 @@ test:
 test-selected:
 	poetry run pytest -vvv -s ./tests -k test_console_run
 
+# autoflake removes unused imports and unused variables as reported by pyflakes
+autoflake:
+	# poetry run autoflake --check --remove-all-unused-imports --recursive .
+	poetry run autoflake --in-place --remove-all-unused-imports --recursive .
+
+# black code formatter
 black:
-	poetry run black  --line-length 120 .
+	poetry run black --line-length 120 .
 
+# flake8 is a python tool that glues together pycodestyle, pyflakes, mccabe
 flake8:
-	poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-	poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+	poetry run flake8 llmgraph --count --select=E9,F63,F7,F82 --show-source --statistics
+	poetry run flake8 llmgraph --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
+# isort sorts imports
 isort:
 	poetry run isort --profile black llmgraph
 
