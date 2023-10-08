@@ -58,9 +58,23 @@ tv:
 
 movie:
     system: You are knowledgeable about movies of all types, and genres.
-    knowledgeable_about: Movies of all types, and genres
+    knowledgeable_about: movies of all types, and genres
     entities: Movies
     entity: Movie name
+    top_n: 5
+
+book:
+    system: You are a book expert, highly knowledgeable about books and authors.
+    knowledgeable_about: books and authors of all types and genres
+    entities: Books
+    entity: Book name
+    top_n: 5
+
+computer_game:
+    system: You are a knowledgeable computer game player, across many genres and platforms.
+    knowledgeable_about: cmputer games across many genres and platforms
+    entities: Computer games
+    entity: Computer game name
     top_n: 5
 
 podcast:

@@ -17,8 +17,9 @@ def test_networkx():
     G.add_edge(2, 3, weight=0.8)
 
     # Serialize the graph to disk in a common graph format (e.g., GraphML)
-    Path(consts.output_folder).mkdir(parents=True, exist_ok=True)
-    nx.write_graphml(G, f"{consts.output_folder}/___test_graph.di.graphml")
+    output_folder = "./_output/"
+    Path(output_folder).mkdir(parents=True, exist_ok=True)
+    nx.write_graphml(G, f"{output_folder}/___test_graph.di.graphml")
 
     print(f"{G.nodes=}")
     print(f"{list(G.nodes)=}")
