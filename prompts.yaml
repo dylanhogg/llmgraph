@@ -1,0 +1,99 @@
+common:
+    # Note {{{{ gets reduced to {{ for the string.format(...) method.
+    prompt_format: >-
+        You are knowledgeable about {knowledgeable_about}.
+        List, in json array format, the top {top_n} {entities} most like '{{entity_root}}'
+        with Wikipedia link, reasons for similarity, similarity on scale of 0 to 1.
+        Format your response in json array format as an array with column names: 'name', 'wikipedia_link', 'reason_for_similarity', and 'similarity'.
+        Example response: {{{{"name": "Example {entity}","wikipedia_link": "https://en.wikipedia.org/wiki/Example_{entity_underscored}","reason_for_similarity": "Reason for similarity","similarity": 0.5}}}}
+
+creative-general:
+    system: You are a highly knowledgeable and creative abstract thinker.
+    knowledgeable_about: creative concepts, abstract ideas, marketing, advertising, psychology and what motivates people.
+    entities: concepts or ideas
+    entity: idea name
+    top_n: 5
+
+concepts-general:
+    system: You are a highly knowledgeable ontologist and creator of knowledge graphs.
+    knowledgeable_about: many concepts and ontologies.
+    entities: concepts
+    entity: concept name
+    top_n: 5
+
+food:
+    system: You are highly knowledgeable about food, cooking, recipes and flavors
+    knowledgeable_about: food, cooking, recipes and flavors
+    entities: recipes or food
+    entity: recipe or food
+    top_n: 5
+
+machine-learning:
+    system: You are a machine learning expert, knowledgeable about machine learning, statistics, algorithms, deep learning, artificial intelligence and computer science.
+    knowledgeable_about: machine learning, statistics, algorithms, deep learning, artificial intelligence and computer science
+    entities: machine learning concepts
+    entity: machine learning concept
+    top_n: 5
+
+software-engineering:
+    system: You are a technology expert, knowledgeable about computers, software engineering, programming, computer science and hardware.
+    knowledgeable_about: computers, software engineering, programming, computer science and hardware
+    entities: software engineering or computer science concepts
+    entity: software engineering concept
+    top_n: 5
+
+people-historical:
+    system: You are knowledgeable about history, politics, world events and people.
+    knowledgeable_about: history, politics, world events and people
+    entities: people
+    entity: person
+    top_n: 5
+
+tv:
+    system: You are knowledgeable about TV shows of all types, and genres.
+    knowledgeable_about: TV shows of all types, and genres
+    entities: TV shows
+    entity: TV show name
+    top_n: 5
+
+movie:
+    system: You are knowledgeable about movies of all types, and genres.
+    knowledgeable_about: Movies of all types, and genres
+    entities: Movies
+    entity: Movie name
+    top_n: 5
+
+podcast:
+    system: You are knowledgeable about podcasts of all types, topics and genres.
+    knowledgeable_about: podcasts of all types, topics and genres
+    entities: podcasts
+    entity: podcast name
+    top_n: 5
+
+music:
+    system: You are a music expert, highly knowledgeable about music, bands and artists.
+    knowledgeable_about: music, bands and artists.
+    entities: bands or artists
+    entity: band or artist name
+    top_n: 5
+
+company:
+    system: You are a business executive highly knowledgeable about many international companies.
+    knowledgeable_about: about many international companies.
+    entities: companies
+    entity: company name
+    top_n: 5
+
+automobile:
+    system: You are highly knowledgeable about cars, trucks and automobiles.
+    knowledgeable_about: cars, trucks and automobiles.
+    entities: cars, trucks and automobile models
+    entity: automobile model
+    top_n: 5
+
+unit_test1:
+    system: You are an expert test driven developer.
+    knowledgeable_about: unit tests and testing frameworks
+    entities: unit test frameworks
+    entity: unit test framework
+    top_n: 5

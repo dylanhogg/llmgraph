@@ -1,3 +1,14 @@
+.idea/
+.vscode/
+.joblib_cache/
+.joblib_cache*/
+log/
+venv*/
+_output/
+*.log
+.DS_Store
+.pypirc
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
