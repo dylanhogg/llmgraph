@@ -41,10 +41,21 @@ line-length = 120
 target-version = ['py38']
 
 [tool.ruff]
-select = ["E", "F", "W", "B", "C90", "I", "UP"]  # https://docs.astral.sh/ruff/rules/
+# https://docs.astral.sh/ruff/rules/
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "C",   # flake8-comprehensions
+    "B",   # flake8-bugbear
+    "C90", # mccabe complexity
+]
+ignore = [
+    "E501", # line too long, handled by black
+]
 line-length = 120
 extend-exclude = [".joblib_cache"]
-ignore = []
 fixable = ["ALL"]
 unfixable = []
 target-version = "py38"
