@@ -1,12 +1,13 @@
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
+
 from llmgraph.library import prompts
 
 
 def test_prompts_0():
     conf = OmegaConf.load("prompts.yaml")
     assert conf
-    assert type(conf) == DictConfig
+    assert isinstance(conf, DictConfig)
 
 
 def test_prompts_1():

@@ -19,7 +19,7 @@ def _call_llm_on_entity(entity: str, entity_type: str) -> Optional[list[dict]]:
 
     sum_total_tokens += total_tokens
     assert chat_response
-    assert type(chat_response) == str
+    assert isinstance(chat_response, str)
     dict_list = utils.extract_json_array(chat_response)
     return dict_list
 
@@ -99,7 +99,10 @@ def _add_to_graph(G, level: int, source_entity: str, json_array: list[dict]):
 def _process_graph(entity_root: str, entity_type: str, level: int, G, max_sum_total_tokens: int, output_folder: str):
     current_nodes = list(G.nodes.items()).copy()
     for node in current_nodes:
-        # node=('Volkswagen Group', {'name': 'Volkswagen Group', 'wikipedia_link': 'https://en.wikipedia.org/wiki/Volkswagen_Group', 'processed': 0, 'group': 2, 'node_count': 13, 'label': 'Volkswagen Group (#13, G2)', 'size': 10})
+        # node=('Volkswagen Group', {'name': 'Volkswagen Group',
+        # 'wikipedia_link': 'https://en.wikipedia.org/wiki/Volkswagen_Group',
+        # 'processed': 0, 'group': 2, 'node_count': 13,
+        # 'label': 'Volkswagen Group (#13, G2)', 'size': 10})
         # type(node)=<class 'tuple'>
         node_data = node[1]
         if not node_data["processed"]:

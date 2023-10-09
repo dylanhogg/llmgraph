@@ -1,5 +1,5 @@
 from pathlib import Path
-from llmgraph.library import consts
+
 import networkx as nx
 
 
