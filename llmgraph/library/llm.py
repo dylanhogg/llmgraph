@@ -31,7 +31,7 @@ def make_call(entity: str, system: str, prompt: str, temperature: int, use_local
     if use_localhost:
         openai.api_key = "localhost"
         openai.api_base = "http://localhost:8081"
-        time.sleep(int(env.get("LLM_USE_LOCALHOST_SLEEP")))
+        time.sleep(int(env.get("LLM_USE_LOCALHOST_SLEEP", 3)))
     else:
         openai.api_key = env.get("OPENAI_API_KEY")
 

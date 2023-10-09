@@ -9,7 +9,7 @@ from joblib import Memory
 from loguru import logger
 from pyvis.network import Network
 
-from . import consts, env
+from . import consts
 
 memory = Memory(".joblib_cache")
 
@@ -45,6 +45,8 @@ def _add_visual_attributes(G):
         processed = G.nodes[entity]["processed"]
         node_count = G.nodes[entity]["node_count"]
         wikipedia_link = G.nodes[entity]["wikipedia_link"]
+        wikipedia_canonical = G.nodes[entity]["wikipedia_canonical"]
+        wikipedia_normalized = G.nodes[entity]["wikipedia_normalized"]
         wikipedia_resp_code = G.nodes[entity]["wikipedia_resp_code"]
         wikipedia_content = G.nodes[entity]["wikipedia_content"]
 
@@ -58,13 +60,15 @@ def _add_visual_attributes(G):
 
         # TODO: handle case if there is no wikipedia link available(?)
         wikipedia_name = _get_ui_wiki_name(wikipedia_link)
+        canonical_link = ""
+        if wikipedia_name != wikipedia_normalized:
+            canonical_link = f" → <a href='https://en.wikipedia.org/wiki/{wikipedia_canonical}' target='_blank'>{wikipedia_normalized}</a>"
+        title = f"{node_count}. <a href='{wikipedia_link}' target='_blank'>{_get_wiki_name(wikipedia_link)}</a>{canonical_link}<br />{wikipedia_content} [{wikipedia_resp_code}, G{group}, L{level}]"
 
         G.nodes[entity]["label"] = f"{wikipedia_name}"  # Label is displayed on node in UI
         # G.nodes[entity]["level"] = level  # NOTE: used in some hierarchical physics layouts
         G.nodes[entity]["group"] = level  # TODO: Or use group?
-        G.nodes[entity][
-            "title"
-        ] = f"#{node_count}. <a href='{wikipedia_link}' target='_blank'>{_get_wiki_name(wikipedia_link)}</a> (G{group}, L{level})<br />{wikipedia_content} [{wikipedia_resp_code}]"
+        G.nodes[entity]["title"] = title
 
     # TODO: edge labels...
     # current_edges = list(G.edges.items()).copy()
@@ -83,15 +87,21 @@ def _get_output_path(output_folder: str, entity_type: str, entity_root: str):
 
 
 def write_html(
-    output_folder: str, entity_type: str, entity_root: str, level: int, G, processed_only: bool, min_level: int = 1
+    output_folder: str,
+    entity_type: str,
+    entity_root: str,
+    level: int,
+    G,
+    llm_temp: float,
+    llm_use_localhost: int,
+    processed_only: bool,
+    min_level: int = 1,
 ):
     if level < min_level:
         return
 
-    temperature = float(env.get("LLM_TEMPERATURE"))
-    use_localhost = int(env.get("LLM_USE_LOCALHOST"))
     output_path = _get_output_path(output_folder, entity_type, entity_root)
-    file_name = f"{entity_type}_{_clean_entity_name(entity_root)}_v{consts.version}_LH{use_localhost}_L{level}_T{temperature}.html"
+    file_name = f"{entity_type}_{_clean_entity_name(entity_root)}_v{consts.version}_LH{llm_use_localhost}_L{level}_T{llm_temp}.html"
 
     G = _add_visual_attributes(G)
 
@@ -110,20 +120,27 @@ def write_html(
     nt.write_html(str(output_path / file_name), open_browser=False, notebook=False)
 
 
-def write_graphml(output_folder: str, entity_type: str, entity_root: str, level: int, G, min_level: int = 1):
+def write_graphml(
+    output_folder: str,
+    entity_type: str,
+    entity_root: str,
+    level: int,
+    G,
+    llm_temp: float,
+    llm_use_localhost: int,
+    min_level: int = 1,
+):
     if level < min_level:
         return
 
-    temperature = float(env.get("LLM_TEMPERATURE"))
-    use_localhost = int(env.get("LLM_USE_LOCALHOST"))
     output_path = _get_output_path(output_folder, entity_type, entity_root)
     nx.write_graphml(
         G,
-        f"{output_path}/{entity_type}_{_clean_entity_name(entity_root)}_v{consts.version}_LH{use_localhost}_L{level}_T{temperature}.graphml",
+        f"{output_path}/{entity_type}_{_clean_entity_name(entity_root)}_v{consts.version}_LH{llm_use_localhost}_L{level}_T{llm_temp}.graphml",
     )
     nx.write_gexf(
         G,
-        f"{output_path}/{entity_type}_{_clean_entity_name(entity_root)}_v{consts.version}_LH{use_localhost}_L{level}_T{temperature}.gephi.gexf",
+        f"{output_path}/{entity_type}_{_clean_entity_name(entity_root)}_v{consts.version}_LH{llm_use_localhost}_L{level}_T{llm_temp}.gephi.gexf",
     )
 
 

@@ -30,6 +30,7 @@ def test_restapi_no_redirect_page():
 def test_restapi_redirect_page():
     page = "Neural_networks"  # Page redirects to:
     redirect_to_page = "Neural_network"
+    expected_text = "A neural network can refer to either a neural circuit of biological neurons"
 
     status_code, response_json, canonical, normalized, summary, headers = wikipedia._rest_v1_summary(
         "https://en.wikipedia.org/wiki/" + page, redirect=True
@@ -43,7 +44,7 @@ def test_restapi_redirect_page():
     assert "content-location" in headers
     assert f"https://en.wikipedia.org/api/rest_v1/page/summary/{page}" != headers["content-location"]
     assert f"https://en.wikipedia.org/api/rest_v1/page/summary/{redirect_to_page}" == headers["content-location"]
-    assert "A neural network can refer to either a neural circuit of biological neurons" in summary
+    assert expected_text in summary
     assert response_json["titles"]["canonical"] != page
     assert response_json["titles"]["canonical"] == redirect_to_page
     assert canonical == redirect_to_page
@@ -53,8 +54,8 @@ def test_restapi_redirect_page():
     )  # redirect=False useless? Why no 304 status?
     assert status_code == 200
     assert response_json == {}
-    assert canonical is None
-    assert summary is None
+    assert canonical == ""
+    assert summary == ""
     assert "content-location" not in headers
 
 

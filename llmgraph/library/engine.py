@@ -4,18 +4,16 @@ import networkx as nx
 from loguru import logger
 from tqdm import tqdm
 
-from . import env, llm, prompts, utils, wikipedia
+from . import llm, prompts, utils, wikipedia
 
 sum_total_tokens = 0
 
 
-def _call_llm_on_entity(entity: str, entity_type: str) -> Optional[list[dict]]:
+def _call_llm_on_entity(entity: str, entity_type: str, llm_temp: int, llm_use_localhost: int) -> Optional[list[dict]]:
     global sum_total_tokens
     prompt = prompts.get(entity, entity_type)
     system = prompts.system(entity_type)
-    temperature = float(env.get("LLM_TEMPERATURE"))
-    use_localhost = bool(int(env.get("LLM_USE_LOCALHOST")))
-    chat_response, total_tokens = llm.make_call(entity, system, prompt, temperature, use_localhost)
+    chat_response, total_tokens = llm.make_call(entity, system, prompt, llm_temp, llm_use_localhost)
 
     sum_total_tokens += total_tokens
     assert chat_response
@@ -36,7 +34,7 @@ def get_entity_name(wikipedia_link, name):
     return entity_name
 
 
-def _make_root_graph(source_entity: str, source_wikipedia: str):
+def _make_root_graph(source_entity: str, source_wikipedia: str) -> nx.DiGraph:
     G = nx.DiGraph()
     entity_name = get_entity_name(
         source_wikipedia, source_entity
@@ -48,6 +46,8 @@ def _make_root_graph(source_entity: str, source_wikipedia: str):
         name=source_entity,
         level=0,
         wikipedia_link=source_wikipedia,
+        wikipedia_canonical=canonical,
+        wikipedia_normalized=normalized,
         wikipedia_resp_code=status_code,
         wikipedia_content=summary[0:500] if summary else "",  # TODO: review and sync with _add_to_graph(..)
         processed=utils.PROCESSED["UN"],
@@ -80,6 +80,8 @@ def _add_to_graph(G, level: int, source_entity: str, json_array: list[dict]):
                 name=entity["name"],
                 level=level + 1,
                 wikipedia_link=entity["wikipedia_link"],
+                wikipedia_canonical=canonical,
+                wikipedia_normalized=normalized,
                 wikipedia_resp_code=status_code,
                 wikipedia_content=summary[0:500] if summary else "",  # TODO: review and sync with _make_root_graph(..)
                 reason_for_similarity=entity["reason_for_similarity"],
@@ -96,7 +98,16 @@ def _add_to_graph(G, level: int, source_entity: str, json_array: list[dict]):
     return G
 
 
-def _process_graph(entity_root: str, entity_type: str, level: int, G, max_sum_total_tokens: int, output_folder: str):
+def _process_graph(
+    entity_root: str,
+    entity_type: str,
+    level: int,
+    G: nx.DiGraph,
+    max_sum_total_tokens: int,
+    output_folder: str,
+    llm_temp: int,
+    llm_use_localhost: int,
+) -> nx.DiGraph:
     current_nodes = list(G.nodes.items()).copy()
     for node in current_nodes:
         # node=('Volkswagen Group', {'name': 'Volkswagen Group',
@@ -110,7 +121,7 @@ def _process_graph(entity_root: str, entity_type: str, level: int, G, max_sum_to
                 f"Processing node: {node_data['name']}, {node_data['wikipedia_link']}, level {node_data['level']}"
             )
             source_entity = get_entity_name(node_data["wikipedia_link"], node_data["name"])
-            llm_response_dict_list = _call_llm_on_entity(source_entity, entity_type)
+            llm_response_dict_list = _call_llm_on_entity(source_entity, entity_type, llm_temp, llm_use_localhost)
             approx_total_cost = (sum_total_tokens / 1000) * 0.002
             logger.info(
                 f"Processed node '{source_entity}'. Sum total tokens for this run: {sum_total_tokens} (approx total cost ${approx_total_cost:,.4}, assuming gpt-3.5-turbo 4k model at Sep 2023 prices)"
@@ -118,9 +129,13 @@ def _process_graph(entity_root: str, entity_type: str, level: int, G, max_sum_to
             if llm_response_dict_list:
                 G = _add_to_graph(G, level, source_entity, llm_response_dict_list)
                 G.nodes[source_entity]["processed"] = utils.PROCESSED["PR"]
-                utils.write_html(output_folder, entity_type, entity_root, level, G, processed_only=True)
-                utils.write_html(output_folder, entity_type, entity_root, level, G, processed_only=False)
-                utils.write_graphml(output_folder, entity_type, entity_root, level, G)
+                utils.write_html(
+                    output_folder, entity_type, entity_root, level, G, llm_temp, llm_use_localhost, processed_only=True
+                )
+                utils.write_html(
+                    output_folder, entity_type, entity_root, level, G, llm_temp, llm_use_localhost, processed_only=False
+                )
+                utils.write_graphml(output_folder, entity_type, entity_root, level, G, llm_temp, llm_use_localhost)
             else:
                 # TODO: Retry, with increased temperature?
                 G.nodes[source_entity]["processed"] = utils.PROCESSED["ER"]
@@ -133,12 +148,21 @@ def _process_graph(entity_root: str, entity_type: str, level: int, G, max_sum_to
 
 
 def create_company_graph(
-    entity_type: str, entity: str, entity_wikipedia: str, levels: int, max_sum_total_tokens: int, output_folder: str
-):
+    entity_type: str,
+    entity: str,
+    entity_wikipedia: str,
+    levels: int,
+    max_sum_total_tokens: int,
+    output_folder: str,
+    llm_temp: int,
+    llm_use_localhost: int,
+) -> nx.DiGraph:
     G = _make_root_graph(entity, entity_wikipedia)
 
     for level in tqdm(range(1, levels + 1)):
         logger.debug(f"Processing {level=}")
-        G = _process_graph(entity, entity_type, level, G, max_sum_total_tokens, output_folder)
+        G = _process_graph(
+            entity, entity_type, level, G, max_sum_total_tokens, output_folder, llm_temp, llm_use_localhost
+        )
 
     return G

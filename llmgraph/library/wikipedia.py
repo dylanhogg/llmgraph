@@ -21,25 +21,26 @@ def _rest_v1_summary(url: str, redirect: bool = True):
     if status_code == 200:
         try:
             response_json = response.json()
-            canonical = response_json.get("titles", {}).get("canonical", None)
-            normalized = response_json.get("titles", {}).get("normalized", None)
-            summary = response_json.get("extract", None)
+            canonical = response_json.get("titles", {}).get("canonical", "")
+            normalized = response_json.get("titles", {}).get("normalized", "")
+            summary = response_json.get("extract", "")
             # import json
             # logger.warning(f"{json.dumps(response_json, indent=4)=}")
             return status_code, response_json, canonical, normalized, summary, headers
         except Exception:
             # NOTE: Can occur with a page that redirects and has redirect=false
-            return status_code, {}, None, None, None, headers
+            return status_code, {}, "", "", "", headers
     else:
         logger.warning(f"Status code was: {status_code}")
-        return status_code, {}, None, None, None, headers
+        return status_code, {}, "", "", "", headers
 
 
 @memory.cache()
 @retry(wait=wait_exponential(multiplier=2, min=5, max=600), stop=stop_after_attempt(5))
 def get_wikipedia_data(url):
     assert "wikipedia.org/wiki/" in url
-    status_code, response_json, canonical, normalized, summary, headers = _rest_v1_summary(url, redirect=False)
+    redirect = True  # Ensure we resolve any wikipedia page redirects
+    status_code, response_json, canonical, normalized, summary, headers = _rest_v1_summary(url, redirect=redirect)
 
     if status_code != 200:
         logger.exception(f"Error. Unexpected response code: {status_code} for url {url}")

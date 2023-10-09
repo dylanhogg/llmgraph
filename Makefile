@@ -1,5 +1,5 @@
 run:
-	poetry run llmgraph-cli
+	poetry run llmgraph
 
 build:
 	poetry build
@@ -33,7 +33,7 @@ test:
 	poetry run pytest -vvv -s ./tests
 
 test-selected:
-	poetry run pytest -vvv -s ./tests -k test_console_run
+	poetry run pytest -vvv -s ./tests -k test_console
 
 black:
 	poetry run black llmgraph tests

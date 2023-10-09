@@ -20,6 +20,8 @@ def run(
     levels: Annotated[int, typer.Option(help="Number of levels deep to process")] = 2,
     max_sum_total_tokens: Annotated[int, typer.Option(help="Maximum sum of tokens for graph generation")] = 200000,
     output_folder: Annotated[str, typer.Option(help="Folder location to write outputs")] = "./_output/",
+    llm_temp: Annotated[float, typer.Option(help="LLM temperature vaue")] = 0.0,
+    llm_use_localhost: Annotated[int, typer.Option(help="LLM use localhost")] = 0,
 ) -> None:
     """
     Create knowledge graphs with LLMs
@@ -44,7 +46,16 @@ def run(
         if user_input.lower() != "y":
             sys.exit("User did not press Y.")
     start = datetime.now()
-    engine.create_company_graph(entity_type, entity_root, entity_wikipedia, levels, max_sum_total_tokens, output_folder)
+    engine.create_company_graph(
+        entity_type,
+        entity_root,
+        entity_wikipedia,
+        levels,
+        max_sum_total_tokens,
+        output_folder,
+        llm_temp,
+        llm_use_localhost,
+    )
     took = datetime.now() - start
     logger.info(f"Done, took {took.total_seconds()}s")
 

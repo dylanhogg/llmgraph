@@ -53,6 +53,7 @@ select = [
 ]
 ignore = [
     "E501", # line too long, handled by black
+    "D203", # 1 blank line required before class docstring
 ]
 line-length = 120
 extend-exclude = [".joblib_cache"]
