@@ -48,7 +48,7 @@ def make_call(entity: str, system: str, prompt: str, temperature: int, use_local
     logger.trace(f"{system=}")
     logger.trace(f"{prompt=}")
     logger.trace(f"{took=}")
-    logger.trace(f"\n---- RESPONSE:")
+    logger.trace("\n---- RESPONSE:")
     logger.trace(f"{chat_response=}")
     logger.trace(f"{total_tokens=}")
 

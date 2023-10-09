@@ -1,4 +1,0 @@
-[flake8]
-ignore = D203
-exclude = .git,.joblib_cache,__pycache__,docs/source/conf.py,build,dist,venv
-max-complexity = 10

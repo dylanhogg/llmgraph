@@ -6,6 +6,10 @@ authors = ["Dylan Hogg <dylanhogg@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.poetry.dependencies]
 python = "^3.10"
 openai = "^0.28.1"
@@ -23,17 +27,24 @@ typer = "^0.9.0"
 rich = "^13.6.0"
 tqdm = "^4.66.1"
 loguru = "^0.7.2"
-isort = "^5.12.0"
-autoflake = "^2.2.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.2"
 black = "^23.9.1"
-flake8 = "^6.1.0"
+ruff = "^0.0.292"
 
 [tool.poetry.scripts]
 llmgraph = 'llmgraph.console:typer_app'
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.black]
+line-length = 120
+target-version = ['py38']
+
+[tool.ruff]
+select = ["E", "F", "W", "B", "C90", "I", "UP"]  # https://docs.astral.sh/ruff/rules/
+line-length = 120
+extend-exclude = [".joblib_cache"]
+ignore = []
+fixable = ["ALL"]
+unfixable = []
+target-version = "py38"

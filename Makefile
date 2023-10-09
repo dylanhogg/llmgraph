@@ -35,24 +35,14 @@ test:
 test-selected:
 	poetry run pytest -vvv -s ./tests -k test_console_run
 
-# autoflake removes unused imports and unused variables as reported by pyflakes
-autoflake:
-	# poetry run autoflake --check --remove-all-unused-imports --recursive .
-	poetry run autoflake --in-place --remove-all-unused-imports --recursive llmgraph
-	poetry run autoflake --in-place --remove-all-unused-imports --recursive tests
-
-# black code formatter
 black:
-	poetry run black --line-length 120 .
+	poetry run black llmgraph tests
 
-# flake8 is a python tool that glues together pycodestyle, pyflakes, mccabe
-flake8:
-	poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-	poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+ruff-check:
+	poetry run ruff check .
 
-# isort sorts imports
-isort:
-	poetry run isort --profile black llmgraph tests
+ruff-fix:
+	poetry run ruff check . --fix
 
 .DEFAULT_GOAL := help
 .PHONY: help

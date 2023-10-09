@@ -135,7 +135,7 @@ def extract_json_array(text) -> Optional[list[dict]]:
         json_array = match.group()
         try:
             parsed_array = json.loads(json_array)
-            logger.trace(f"extract_json_array success:\n" + json.dumps(parsed_array, indent=4))
+            logger.trace("extract_json_array success:\n" + json.dumps(parsed_array, indent=4))
             return parsed_array
         except json.JSONDecodeError as ex:
             logger.warning(f"extract_json_array: {ex} {text=}")

@@ -27,7 +27,7 @@ def _rest_v1_summary(url: str, redirect: bool = True):
             # import json
             # logger.warning(f"{json.dumps(response_json, indent=4)=}")
             return status_code, response_json, canonical, normalized, summary, headers
-        except Exception as ex:
+        except Exception:
             # NOTE: Can occur with a page that redirects and has redirect=false
             return status_code, {}, None, None, None, headers
     else:

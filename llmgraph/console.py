@@ -25,7 +25,7 @@ def run(
     Create knowledge graphs with LLMs
     """
     if "/wiki/" in entity_type:
-        raise Exception(f"You appear to have the 'entity_type' and 'entity_wikipedia' arguments mixed up.")
+        raise Exception("You appear to have the 'entity_type' and 'entity_wikipedia' arguments mixed up.")
 
     custom_entity_root = True
     if "/wiki/" not in entity_wikipedia:
