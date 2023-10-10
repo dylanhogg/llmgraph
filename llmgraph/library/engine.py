@@ -1,3 +1,5 @@
+import json
+import urllib.parse
 from typing import Optional
 
 import networkx as nx
@@ -29,8 +31,8 @@ def get_entity_name(wikipedia_link, name):
     entity_name = wikipedia_link if wikipedia_link else name
     wiki_loc = entity_name.rfind("/wiki/")
     if wiki_loc > -1:
-        # TODO: crawl wiki page, get metadata, and also check for redirects
         entity_name = entity_name[wiki_loc:].replace("/wiki/", "").replace("_", " ")
+        entity_name = urllib.parse.unquote(entity_name)
     return entity_name
 
 
@@ -56,7 +58,7 @@ def _make_root_graph(source_entity: str, source_wikipedia: str) -> nx.DiGraph:
     return G
 
 
-def _add_to_graph(G, level: int, source_entity: str, json_array: list[dict]):
+def _add_to_graph(G: nx.DiGraph, level: int, source_entity: str, json_array: list[dict]):
     global node_count
     for entity in json_array:
         """
@@ -135,7 +137,13 @@ def _process_graph(
                 utils.write_html(
                     output_folder, entity_type, entity_root, level, G, llm_temp, llm_use_localhost, processed_only=False
                 )
-                utils.write_graphml(output_folder, entity_type, entity_root, level, G, llm_temp, llm_use_localhost)
+                try:
+                    utils.write_graphml(output_folder, entity_type, entity_root, level, G, llm_temp, llm_use_localhost)
+                except Exception as ex:
+                    logger.error(
+                        f"write_graphml error processing {source_entity=} with {json.dumps(llm_response_dict_list, indent=2)=}"
+                    )
+                    raise ex
             else:
                 # TODO: Retry, with increased temperature?
                 G.nodes[source_entity]["processed"] = utils.PROCESSED["ER"]

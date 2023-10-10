@@ -20,6 +20,13 @@ PROCESSED = {
 }
 
 
+def _get_processed_str(processed: int):
+    for k, v in PROCESSED.items():
+        if v == processed:
+            return k
+    return "??"
+
+
 def _clean_entity_name(name: str):
     return name.lower().replace(" ", "-").replace("/", "-")
 
@@ -31,17 +38,18 @@ def _get_wiki_name(wikipedia_link: str):
 
 def _get_ui_wiki_name(wikipedia_link: str):
     loc = wikipedia_link.rfind("/wiki/")
-    assert loc > 0
-    wiki_name = wikipedia_link[loc:].replace("/wiki/", "").replace("_", " ")
-    return unquote(wiki_name)
+    if loc > 0:
+        wiki_name = wikipedia_link[loc:].replace("/wiki/", "").replace("_", " ")
+        return unquote(wiki_name)
+    return None
 
 
-def _add_visual_attributes(G):
+def _add_visual_attributes(G: nx.DiGraph):
     current_nodes = list(G.nodes.items()).copy()
     for node in current_nodes:
         entity = node[0]
-        # name = G.nodes[entity]["name"]  # TODO: maybe reuse again? Esp case if there is no wikipedia link available(?)
-        level = G.nodes[entity]["level"]  # TODO
+        name = G.nodes[entity]["name"]
+        level = G.nodes[entity]["level"]
         processed = G.nodes[entity]["processed"]
         node_count = G.nodes[entity]["node_count"]
         wikipedia_link = G.nodes[entity]["wikipedia_link"]
@@ -50,25 +58,36 @@ def _add_visual_attributes(G):
         wikipedia_resp_code = G.nodes[entity]["wikipedia_resp_code"]
         wikipedia_content = G.nodes[entity]["wikipedia_content"]
 
-        group = 0  # Root
-        if node_count > 0 and processed == PROCESSED["PR"]:
-            group = 1  # Processed
-        elif node_count > 0 and processed == PROCESSED["UN"]:
-            group = 2  # Not processed yet
-        elif node_count > 0 and processed == PROCESSED["ER"]:
-            group = 3  # Error
+        # group = 0  # Root
+        # if node_count > 0 and processed == PROCESSED["PR"]:
+        #     group = 1  # Processed
+        # elif node_count > 0 and processed == PROCESSED["UN"]:
+        #     group = 2  # Not processed yet
+        # elif node_count > 0 and processed == PROCESSED["ER"]:
+        #     group = 3  # Error
+
+        group = level
+        if wikipedia_resp_code != 200:
+            group = 500
+
+        processed_code = _get_processed_str(int(processed))
 
         # TODO: handle case if there is no wikipedia link available(?)
         wikipedia_name = _get_ui_wiki_name(wikipedia_link)
-        canonical_link = ""
-        if wikipedia_name != wikipedia_normalized:
-            canonical_link = f" → <a href='https://en.wikipedia.org/wiki/{wikipedia_canonical}' target='_blank'>{wikipedia_normalized}</a>"
-        title = f"{node_count}. <a href='{wikipedia_link}' target='_blank'>{_get_wiki_name(wikipedia_link)}</a>{canonical_link}<br />{wikipedia_content} [{wikipedia_resp_code}, G{group}, L{level}]"
+        if wikipedia_name:
+            canonical_link = ""
+            if wikipedia_normalized and wikipedia_name != wikipedia_normalized:
+                canonical_link = f" → <a href='https://en.wikipedia.org/wiki/{wikipedia_canonical}' target='_blank'>{wikipedia_normalized}</a>"
+            title_html = f"{node_count}. <a href='{wikipedia_link}' target='_blank'>{wikipedia_name}</a>{canonical_link}<br />{wikipedia_content}<br />[{wikipedia_resp_code}, G{group}, L{level}, {processed_code}]"
+            node_label = f"{wikipedia_name}"
+        else:
+            title_html = f"{node_count}. <a href='{wikipedia_link}' target='_blank'>{name}</a>"
+            node_label = f"{name}"
 
-        G.nodes[entity]["label"] = f"{wikipedia_name}"  # Label is displayed on node in UI
+        G.nodes[entity]["label"] = node_label  # Displayed on node in UI
+        G.nodes[entity]["title"] = title_html  # Mouseover html
+        G.nodes[entity]["group"] = group  # Colour of node
         # G.nodes[entity]["level"] = level  # NOTE: used in some hierarchical physics layouts
-        G.nodes[entity]["group"] = level  # TODO: Or use group?
-        G.nodes[entity]["title"] = title
 
     # TODO: edge labels...
     # current_edges = list(G.edges.items()).copy()
@@ -91,7 +110,7 @@ def write_html(
     entity_type: str,
     entity_root: str,
     level: int,
-    G,
+    G: nx.DiGraph,
     llm_temp: float,
     llm_use_localhost: int,
     processed_only: bool,
@@ -110,7 +129,7 @@ def write_html(
         G = G.subgraph(nodes)
         file_name = file_name.replace(".html", "_PROCESSED_ONLY.html")
 
-    nt = Network(height="1000px", width="100%", directed=True, cdn_resources="remote")
+    nt = Network(height="1200px", width="100%", directed=True, cdn_resources="remote")
     nt.from_nx(G)
     # nt.barnes_hut(gravity=-80000, central_gravity=0.3, spring_length=250, spring_strength=0.001, damping=0.09, overlap=0)  # https://pyvis.readthedocs.io/en/latest/documentation.html#pyvis.network.Network.barnes_hut
     nt.force_atlas_2based(
@@ -125,7 +144,7 @@ def write_graphml(
     entity_type: str,
     entity_root: str,
     level: int,
-    G,
+    G: nx.DiGraph,
     llm_temp: float,
     llm_use_localhost: int,
     min_level: int = 1,
