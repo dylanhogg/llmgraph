@@ -1,22 +1,24 @@
+from pathlib import Path
+
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
 
-from llmgraph.library import prompts
+from llmgraph.library import consts, prompts
 
 
 def test_prompts_0():
-    conf = OmegaConf.load("prompts.yaml")
+    conf = OmegaConf.load(Path(consts.package_name) / consts.prompts_yaml_location)
     assert conf
     assert isinstance(conf, DictConfig)
 
 
 def test_prompts_1():
-    conf = OmegaConf.load("prompts.yaml")
+    conf = OmegaConf.load(Path(consts.package_name) / consts.prompts_yaml_location)
     assert conf["unit_test1"]["system"] == "You are an expert test driven developer."
     assert conf.unit_test1.system == conf["unit_test1"]["system"]
     assert conf.unit_test1.knowledgeable_about == "unit tests and testing frameworks"
 
-    common_prompt_format = conf.common.prompt_format
+    common_prompt_format = conf._common.prompt_format
     assert common_prompt_format
 
     # You are knowledgeable about {{knowledgeable_about}}.
@@ -40,7 +42,7 @@ def test_prompts_1():
 
 
 def test_prompts_2():
-    prompt_format = prompts._get_prompt_format("unit_test1")
+    prompt_format = prompts._get_prompt_format("unit_test1", consts.prompts_yaml_location)
     assert prompt_format
     assert (
         prompt_format
@@ -49,7 +51,7 @@ def test_prompts_2():
 
 
 def test_prompts_3():
-    prompt = prompts.get("pytest", "unit_test1")
+    prompt = prompts.get("pytest", "unit_test1", consts.prompts_yaml_location)
     assert prompt
     assert (
         prompt

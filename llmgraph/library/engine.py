@@ -6,15 +6,15 @@ import networkx as nx
 from loguru import logger
 from tqdm import tqdm
 
-from . import llm, prompts, utils, wikipedia
+from . import consts, llm, prompts, utils, wikipedia
 
 sum_total_tokens = 0
 
 
 def _call_llm_on_entity(entity: str, entity_type: str, llm_temp: int, llm_use_localhost: int) -> Optional[list[dict]]:
     global sum_total_tokens
-    prompt = prompts.get(entity, entity_type)
-    system = prompts.system(entity_type)
+    prompt = prompts.get(entity, entity_type, consts.prompts_yaml_location)
+    system = prompts.system(entity_type, consts.prompts_yaml_location)
     chat_response, total_tokens = llm.make_call(entity, system, prompt, llm_temp, llm_use_localhost)
 
     sum_total_tokens += total_tokens

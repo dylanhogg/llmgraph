@@ -1,4 +1,4 @@
-common:
+_common:
     # Note {{{{ gets reduced to {{ for the string.format(...) method.
     prompt_format: >-
         You are knowledgeable about {knowledgeable_about}.
@@ -61,6 +61,13 @@ movie:
     knowledgeable_about: movies of all types, and genres
     entities: Movies
     entity: Movie name
+    top_n: 5
+
+documentary:
+    system: You are knowledgeable about documentaries of all types, and genres.
+    knowledgeable_about: documentaries of all types, and genres
+    entities: Documentaries
+    entity: Documentary
     top_n: 5
 
 book:
