@@ -42,7 +42,7 @@ def make_call(entity: str, system: str, prompt: str, temperature: int, use_local
         try:
             key = env.get("OPENAI_API_KEY")
         except Exception as ex:
-            raise AppUsageException("Expected environment variable OPENAI_API_KEY to be set to use OpenAI API.") from ex
+            raise AppUsageException("Expected environment variable 'OPENAI_API_KEY' to be set to use OpenAI API.") from ex
         openai.api_key = key
 
     messages = [{"role": "system", "content": system}, {"role": "user", "content": prompt}]
