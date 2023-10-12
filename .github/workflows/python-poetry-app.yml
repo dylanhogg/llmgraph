@@ -1,6 +1,13 @@
-name: test
+name: Test Poetry application
 
-on: pull_request
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
 
 jobs:
   test:
@@ -16,7 +23,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
       #----------------------------------------------
       #  -----  install & configure poetry  -----
       #----------------------------------------------
