@@ -23,30 +23,30 @@ jobs:
         with:
           python-version: "3.9"
 
-      # - name: Load cached Poetry installation, if exists
-      #   id: cached-poetry
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ~/.local # the path depends on the OS
-      #     key: poetry-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-0 # increment to reset cache
+      - name: Load cached Poetry installation, if exists
+        id: cached-poetry
+        uses: actions/cache@v3
+        with:
+          path: ~/.local # the path depends on the OS
+          key: poetry-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-1 # increment to reset cache, e.g. if you see .venv/bin/activate: No such file or directory
 
       - name: Install and configure Poetry, if cache miss
-        # if: steps.cached-poetry.outputs.cache-hit != 'true'
+        if: steps.cached-poetry.outputs.cache-hit != 'true'
         uses: snok/install-poetry@v1
         with:
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
 
-      # - name: Load cached venv, if exists
-      #   id: cached-poetry-dependencies
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: .venv
-      #     key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Load cached venv, if exists
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}-0
 
       - name: Install dependencies (without root project), if cache miss
-        # if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
 
       - name: Install root project
