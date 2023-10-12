@@ -1,0 +1,2 @@
+class AppUsageException(Exception):
+    pass

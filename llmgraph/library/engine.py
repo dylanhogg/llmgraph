@@ -6,6 +6,8 @@ import networkx as nx
 from loguru import logger
 from tqdm import tqdm
 
+from llmgraph.library.classes import AppUsageException
+
 from . import consts, llm, prompts, utils, wikipedia
 
 sum_total_tokens = 0
@@ -150,7 +152,7 @@ def _process_graph(
                 return G
 
     if sum_total_tokens > max_sum_total_tokens:
-        raise Exception(f"Token limit hit: {sum_total_tokens=}, {max_sum_total_tokens=}")
+        raise AppUsageException(f"Token limit hit: {sum_total_tokens=}, {max_sum_total_tokens=}")
 
     return G
 
@@ -167,7 +169,9 @@ def create_company_graph(
 ) -> nx.DiGraph:
     G = _make_root_graph(entity, entity_wikipedia)
 
-    for level in tqdm(range(1, levels + 1)):
+    pbar = tqdm(range(1, levels + 1))
+    for level in pbar:
+        pbar.set_description(f"Processing level {level}")
         logger.debug(f"Processing {level=}")
         G = _process_graph(
             entity, entity_type, level, G, max_sum_total_tokens, output_folder, llm_temp, llm_use_localhost

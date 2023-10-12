@@ -3,9 +3,11 @@ from datetime import datetime
 
 import typer
 from loguru import logger
+from rich import print
 from typing_extensions import Annotated
 
-from .library import engine
+from .library import engine, log
+from .library.classes import AppUsageException
 
 typer_app = typer.Typer()
 
@@ -26,12 +28,14 @@ def run(
     """
     Create knowledge graphs with LLMs
     """
+    log.configure()
+
     if "/wiki/" in entity_type:
-        raise Exception("You appear to have the 'entity_type' and 'entity_wikipedia' arguments mixed up.")
+        raise AppUsageException("You appear to have the 'entity_type' and 'entity_wikipedia' arguments mixed up.")
 
     custom_entity_root = True
     if "/wiki/" not in entity_wikipedia:
-        raise Exception(f"{entity_wikipedia} doesn't look like a valid wikipedia url.")
+        raise AppUsageException(f"{entity_wikipedia} doesn't look like a valid wikipedia url.")
     if not entity_root:
         wiki_loc = entity_wikipedia.rfind("/wiki/")
         entity_root = entity_wikipedia[wiki_loc:].replace("/wiki/", "").replace("_", " ")  # TODO: review
@@ -46,20 +50,20 @@ def run(
         if user_input.lower() != "y":
             sys.exit("User did not press Y.")
     start = datetime.now()
-    engine.create_company_graph(
-        entity_type,
-        entity_root,
-        entity_wikipedia,
-        levels,
-        max_sum_total_tokens,
-        output_folder,
-        llm_temp,
-        llm_use_localhost,
-    )
+
+    try:
+        engine.create_company_graph(
+            entity_type,
+            entity_root,
+            entity_wikipedia,
+            levels,
+            max_sum_total_tokens,
+            output_folder,
+            llm_temp,
+            llm_use_localhost,
+        )
+    except AppUsageException as ex:
+        print("Oops! " + str(ex))
+
     took = datetime.now() - start
     logger.info(f"Done, took {took.total_seconds()}s")
-
-
-# if __name__ == "__main__":
-#     log.configure()
-#     typer_app()

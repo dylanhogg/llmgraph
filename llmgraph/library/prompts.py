@@ -3,6 +3,7 @@ import importlib.resources
 from omegaconf import OmegaConf
 
 from llmgraph.library import consts
+from llmgraph.library.classes import AppUsageException
 
 
 def _get_conf(entity_type: str, yaml_file: str) -> (str, dict):
@@ -16,7 +17,7 @@ def _get_conf(entity_type: str, yaml_file: str) -> (str, dict):
         valid_entity_types = sorted(
             [k for k in conf_file.keys() if not k.startswith("_") and not k.startswith("unit_test")]
         )
-        raise Exception(f"Entity type '{entity_type}' not supported. Try one of these: {valid_entity_types}")
+        raise AppUsageException(f"Entity type '{entity_type}' not supported. Try one of these: {valid_entity_types}")
     entity_conf = conf_file[entity_type]
     return common_prompt_format, entity_conf
 

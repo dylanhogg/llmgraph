@@ -4,9 +4,10 @@ from datetime import datetime
 import openai
 from joblib import Memory
 from loguru import logger
-from tenacity import retry, stop_after_attempt, wait_exponential
+from tenacity import retry, retry_if_not_exception_type, stop_after_attempt, wait_exponential
 
 from . import env
+from .classes import AppUsageException
 
 memory = Memory(".joblib_cache")
 
@@ -26,14 +27,23 @@ def log_retry(state):
 
 
 @memory.cache()
-@retry(wait=wait_exponential(multiplier=2, min=5, max=600), stop=stop_after_attempt(5), before_sleep=log_retry)
+@retry(
+    wait=wait_exponential(multiplier=2, min=5, max=600),
+    stop=stop_after_attempt(5),
+    before_sleep=log_retry,
+    retry=retry_if_not_exception_type(AppUsageException),
+)
 def make_call(entity: str, system: str, prompt: str, temperature: int, use_localhost: bool) -> (str, int):
     if use_localhost:
         openai.api_key = "localhost"
         openai.api_base = "http://localhost:8081"
-        time.sleep(int(env.get("LLM_USE_LOCALHOST_SLEEP", 3)))
+        time.sleep(int(env.get("LLM_USE_LOCALHOST_SLEEP", 1)))
     else:
-        openai.api_key = env.get("OPENAI_API_KEY")
+        try:
+            key = env.get("OPENAI_API_KEY")
+        except Exception as ex:
+            raise AppUsageException("Expected environment variable OPENAI_API_KEY to be set to use OpenAI API.") from ex
+        openai.api_key = key
 
     messages = [{"role": "system", "content": system}, {"role": "user", "content": prompt}]
 
