@@ -1,4 +1,4 @@
-name: Test Poetry application
+name: Build and Test Poetry application
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  build-test:
     # Original source: https://github.com/marketplace/actions/install-poetry-action#testing
     runs-on: ubuntu-latest
     steps:
@@ -22,7 +22,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.9"
-          cache: 'poetry'
 
       - name: Load cached Poetry installation, if exists
         id: cached-poetry
@@ -53,10 +52,6 @@ jobs:
       - name: Install root project
         run: poetry install --no-interaction
 
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: Run style check - black
         run: |
           source .venv/bin/activate
