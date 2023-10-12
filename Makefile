@@ -48,10 +48,14 @@ black-fix:
 	poetry run black llmgraph tests
 
 ruff-check:
-	poetry run ruff check . --verbose
+	poetry run ruff check .
 
 ruff-fix:
 	poetry run ruff check . --fix
+
+run-pre-commit:
+	poetry run pre-commit run --all-files
+
 
 .DEFAULT_GOAL := help
 .PHONY: help
