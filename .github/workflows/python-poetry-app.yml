@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: "3.9"
 
-      - name: Load cached Poetry installation
+      - name: Load cached Poetry installation, if exists
         id: cached-poetry
         uses: actions/cache@v3
         with:
@@ -56,7 +56,7 @@ jobs:
         run: |
           source .venv/bin/activate
           black llmgraph tests --check --verbose
-          ruff check .
+          ruff check . --verbose
 
       - name: Run tests
         env:

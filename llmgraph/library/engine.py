@@ -1,5 +1,5 @@
-import json
 import urllib.parse
+import json
 from typing import Optional
 
 import networkx as nx
