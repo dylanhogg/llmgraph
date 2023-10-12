@@ -52,7 +52,13 @@ jobs:
       - name: Install root project
         run: poetry install --no-interaction
 
-      - name: Run pytest and coverage
+      - name: Run linters
+        run: |
+          source .venv/bin/activate
+          black llmgraph tests --check --verbose
+          ruff check .
+
+      - name: Run tests
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
