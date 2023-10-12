@@ -11,9 +11,6 @@ from . import consts, llm, prompts, utils, wikipedia
 sum_total_tokens = 0
 
 
-
-
-
 def _call_llm_on_entity(entity: str, entity_type: str, llm_temp: int, llm_use_localhost: int) -> Optional[list[dict]]:
     global sum_total_tokens
     prompt = prompts.get(entity, entity_type, consts.prompts_yaml_location)

@@ -41,11 +41,14 @@ test-selected:
 	poetry run coverage run -m pytest -vvv -s ./tests -k test_console
 	poetry run coverage report
 
-black:
+black-check:
+	poetry run black llmgraph tests --check --verbose
+
+black-fix:
 	poetry run black llmgraph tests
 
 ruff-check:
-	poetry run ruff check .
+	poetry run ruff check . --verbose
 
 ruff-fix:
 	poetry run ruff check . --fix
