@@ -49,7 +49,7 @@ jobs:
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
       #----------------------------------------------
-      # install your root project, if required
+      # install your root project
       #----------------------------------------------
       - name: Install project
         run: poetry install --no-interaction
@@ -61,5 +61,5 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           source .venv/bin/activate
-          pytest tests/
+          coverage run -m pytest -vvv -s ./tests
           coverage report

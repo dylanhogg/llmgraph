@@ -1,5 +1,7 @@
 run:
-	poetry run llmgraph
+	# poetry run llmgraph
+	# poetry run llmgraph food "https://en.wikipedia.org/wiki/Bolognese_sauce" --levels 4
+	poetry run llmgraph food "https://en.wikipedia.org/wiki/Burrito" --levels 4
 
 build:
 	poetry build
@@ -18,7 +20,9 @@ test-install-from-pypi:
 	python3 -m venv venv_install_test
 	source venv_install_test/bin/activate ; pip install llmgraph
 	source venv_install_test/bin/activate ; pip list | grep llmgraph
-	rm -rf venv_install_test
+	# source venv_install_test/bin/activate ; llmgraph bad_entity "https://en.wikipedia.org/wiki/The_Matrix"
+	# source venv_install_test/bin/activate ; llmgraph movie "https://en.wikipedia.org/wiki/The_Matrix"
+	# rm -rf venv_install_test
 
 poetry-config:
 	poetry config --list
@@ -30,10 +34,12 @@ poetry-gen-requirements:
 	poetry export --output requirements.txt
 
 test:
-	poetry run pytest -vvv -s ./tests
+	poetry run coverage run -m pytest -vvv -s ./tests
+	poetry run coverage report
 
 test-selected:
-	poetry run pytest -vvv -s ./tests -k test_console
+	poetry run coverage run -m pytest -vvv -s ./tests -k test_console
+	poetry run coverage report
 
 black:
 	poetry run black llmgraph tests
