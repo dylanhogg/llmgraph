@@ -1,5 +1,5 @@
-import urllib.parse
 import json
+import urllib.parse
 from typing import Optional
 
 import networkx as nx
@@ -9,6 +9,9 @@ from tqdm import tqdm
 from . import consts, llm, prompts, utils, wikipedia
 
 sum_total_tokens = 0
+
+
+
 
 
 def _call_llm_on_entity(entity: str, entity_type: str, llm_temp: int, llm_use_localhost: int) -> Optional[list[dict]]:

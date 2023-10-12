@@ -52,10 +52,14 @@ jobs:
       - name: Install root project
         run: poetry install --no-interaction
 
-      - name: Run linters
+      - name: Run style check - black
         run: |
           source .venv/bin/activate
           black llmgraph tests --check --verbose
+
+      - name: Run linter - ruff
+        run: |
+          source .venv/bin/activate
           ruff check . --verbose
 
       - name: Run tests
