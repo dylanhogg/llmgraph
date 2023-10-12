@@ -10,53 +10,49 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  test-app:
     # Original source: https://github.com/marketplace/actions/install-poetry-action#testing
     runs-on: ubuntu-latest
     steps:
-      #----------------------------------------------
-      #       check-out repo and set-up python
-      #----------------------------------------------
-      - name: Check out repository
+      - name: Check out repo and setup Python
         uses: actions/checkout@v3
+
       - name: Set up python
         id: setup-python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
-      #----------------------------------------------
-      #  -----  install & configure poetry  -----
-      #----------------------------------------------
-      - name: Install Poetry
+          python-version: "3.9"
+
+      - name: Load cached Poetry installation
+        id: cached-poetry
+        uses: actions/cache@v3
+        with:
+          path: ~/.local # the path depends on the OS
+          key: poetry-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-0 # increment to reset cache
+
+      - name: Install and configure Poetry, if cache miss
+        if: steps.cached-poetry.outputs.cache-hit != 'true'
         uses: snok/install-poetry@v1
         with:
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
-      #----------------------------------------------
-      #       load cached venv if cache exists
-      #----------------------------------------------
-      - name: Load cached venv
+
+      - name: Load cached venv, if exists
         id: cached-poetry-dependencies
         uses: actions/cache@v3
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-      #----------------------------------------------
-      # install dependencies if cache does not exist
-      #----------------------------------------------
-      - name: Install dependencies
+
+      - name: Install dependencies (without root project), if cache miss
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
-      #----------------------------------------------
-      # install your root project
-      #----------------------------------------------
-      - name: Install project
+
+      - name: Install root project
         run: poetry install --no-interaction
-      #----------------------------------------------
-      #              run test suite
-      #----------------------------------------------
-      - name: Run tests
+
+      - name: Run pytest and coverage
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
