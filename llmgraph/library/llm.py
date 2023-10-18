@@ -47,7 +47,7 @@ def make_call(entity: str, system: str, prompt: str, llm_config: DictConfig) -> 
     start = datetime.now()
     try:
         api_response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo", messages=messages, temperature=llm_config.temperature
+            model=llm_config.model, messages=messages, temperature=llm_config.temperature
         )
     except AuthenticationError as ex:
         raise AppUsageException(str(ex)) from ex

@@ -8,6 +8,7 @@ import networkx as nx
 from joblib import Memory
 from loguru import logger
 from pyvis.network import Network
+from rich import print
 
 from . import consts
 
@@ -58,14 +59,6 @@ def _add_visual_attributes(G: nx.DiGraph):
         wikipedia_resp_code = G.nodes[entity]["wikipedia_resp_code"]
         wikipedia_content = G.nodes[entity]["wikipedia_content"]
 
-        # group = 0  # Root
-        # if node_count > 0 and processed == PROCESSED["PR"]:
-        #     group = 1  # Processed
-        # elif node_count > 0 and processed == PROCESSED["UN"]:
-        #     group = 2  # Not processed yet
-        # elif node_count > 0 and processed == PROCESSED["ER"]:
-        #     group = 3  # Error
-
         group = level
         if wikipedia_resp_code != 200:
             group = 500
@@ -115,8 +108,9 @@ def write_html(
     llm_use_localhost: int,
     processed_only: bool,
     min_level: int = 1,
+    print_output: bool = False,
 ):
-    if level < min_level:
+    if level <= min_level:
         return
 
     output_path = _get_output_path(output_folder, entity_type, entity_root)
@@ -127,7 +121,7 @@ def write_html(
     if processed_only:
         nodes = [node for node, data in G.nodes(data=True) if data.get("processed") == PROCESSED["PR"]]
         G = G.subgraph(nodes)
-        file_name = file_name.replace(".html", "_PROCESSED_ONLY.html")
+        file_name = file_name.replace(".html", "_ALL_PROCESSED.html")
 
     nt = Network(height="1200px", width="100%", directed=True, cdn_resources="remote")
     nt.from_nx(G)
@@ -136,7 +130,11 @@ def write_html(
         spring_strength=0.03
     )  # default spring_strength=0.08; https://pyvis.readthedocs.io/en/latest/documentation.html#pyvis.network.Network.force_atlas_2based
     nt.show_buttons(filter_=["physics"])
-    nt.write_html(str(output_path / file_name), open_browser=False, notebook=False)
+
+    output_filename = str(output_path / file_name)
+    nt.write_html(output_filename, open_browser=False, notebook=False)
+    if print_output:
+        print(f"Output html: '{output_filename}' (level {level})")
 
 
 def write_graphml(

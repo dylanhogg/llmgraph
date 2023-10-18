@@ -1,17 +1,22 @@
 import json
 import urllib.parse
+import warnings
 from typing import Optional
 
 import networkx as nx
 from loguru import logger
 from omegaconf import DictConfig
-from tqdm import tqdm
+from rich import print
+from tqdm import TqdmExperimentalWarning
+from tqdm.rich import tqdm
 
 from llmgraph.library.classes import AppUsageException
 
 from . import consts, llm, prompts, utils, wikipedia
 
 sum_total_tokens = 0
+
+warnings.filterwarnings("ignore", category=TqdmExperimentalWarning)
 
 
 def _call_llm_on_entity(entity: str, entity_type: str, llm_config: DictConfig) -> Optional[list[dict]]:
@@ -49,7 +54,7 @@ def _make_root_graph(source_entity: str, source_wikipedia: str) -> nx.DiGraph:
     G.add_node(
         entity_name,  # TODO: or normalized?
         name=source_entity,
-        level=0,
+        level=1,
         wikipedia_link=source_wikipedia,
         wikipedia_canonical=canonical,
         wikipedia_normalized=normalized,
@@ -113,7 +118,8 @@ def _process_graph(
     llm_config: DictConfig,
 ) -> nx.DiGraph:
     current_nodes = list(G.nodes.items()).copy()
-    for node in current_nodes:
+    print_output = True
+    for i, node in enumerate(current_nodes):
         # node=('Volkswagen Group', {'name': 'Volkswagen Group',
         # 'wikipedia_link': 'https://en.wikipedia.org/wiki/Volkswagen_Group',
         # 'processed': 0, 'group': 2, 'node_count': 13,
@@ -124,6 +130,7 @@ def _process_graph(
             logger.debug(
                 f"Processing node: {node_data['name']}, {node_data['wikipedia_link']}, level {node_data['level']}"
             )
+            print(f"Processing [bold green]{node_data['name']}[/bold green] (level {node_data['level']})")
             source_entity = get_entity_name(node_data["wikipedia_link"], node_data["name"])
             llm_response_dict_list = _call_llm_on_entity(source_entity, entity_type, llm_config)
             approx_total_cost = (sum_total_tokens / 1000) * 0.002
@@ -143,6 +150,7 @@ def _process_graph(
                     llm_config.use_localhost,
                     processed_only=True,
                 )
+                print_output = i == (len(current_nodes) - 1)
                 utils.write_html(
                     output_folder,
                     entity_type,
@@ -152,6 +160,7 @@ def _process_graph(
                     llm_config.temperature,
                     llm_config.use_localhost,
                     processed_only=False,
+                    print_output=print_output,
                 )
                 try:
                     utils.write_graphml(

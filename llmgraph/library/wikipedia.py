@@ -59,8 +59,8 @@ def get_wikipedia_data(url) -> (str, str, str, int):
     if status_code != 200:
         logger.debug(f"Unsuccessful request: {status_code=} for {url=}")
         # NOTE: canonical is empty if 404
-        print(f"[bold green]Processing {url}[/bold green] (wikipedia status {status_code})")
+        print(f"Reading [bold green]{url}[/bold green] ({status_code})")
     else:
-        print(f"[bold green]Processing {url}[/bold green]")
+        print(f"Reading [bold green]{url}[/bold green]")
 
     return summary, canonical, normalized, status_code

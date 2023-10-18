@@ -1,10 +1,11 @@
 run:
-	# poetry run llmgraph
-	# poetry run llmgraph food "https://en.wikipedia.org/wiki/Bolognese_sauce" --levels 4
-	poetry run llmgraph food "https://en.wikipedia.org/wiki/Burrito" --levels 4
+	llmgraph concepts-general "https://en.wikipedia.org/wiki/Many-worlds_interpretation" --levels 2
 
 build:
 	poetry build
+
+install:
+	poetry install
 
 publish:
 	# One time: poetry config pypi-token.pypi <your-pypi-token>
@@ -19,10 +20,10 @@ test-install-from-pypi:
 	rm -rf venv_install_test
 	python3 -m venv venv_install_test
 	source venv_install_test/bin/activate ; pip install llmgraph
+	source venv_install_test/bin/activate ; llmgraph --help
+	source venv_install_test/bin/activate ; llmgraph --version
 	source venv_install_test/bin/activate ; pip list | grep llmgraph
-	# source venv_install_test/bin/activate ; llmgraph bad_entity "https://en.wikipedia.org/wiki/The_Matrix"
-	# source venv_install_test/bin/activate ; llmgraph movie "https://en.wikipedia.org/wiki/The_Matrix"
-	# rm -rf venv_install_test
+	rm -rf venv_install_test
 
 poetry-config:
 	poetry config --list
@@ -44,13 +45,13 @@ test-selected:
 black-check:
 	poetry run black llmgraph tests --check --verbose
 
-black-fix:
+black:
 	poetry run black llmgraph tests
 
 ruff-check:
 	poetry run ruff check .
 
-ruff-fix:
+ruff:
 	poetry run ruff check . --fix
 
 run-pre-commit:
