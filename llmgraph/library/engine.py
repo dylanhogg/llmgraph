@@ -4,6 +4,7 @@ from typing import Optional
 
 import networkx as nx
 from loguru import logger
+from omegaconf import DictConfig
 from tqdm import tqdm
 
 from llmgraph.library.classes import AppUsageException
@@ -13,11 +14,11 @@ from . import consts, llm, prompts, utils, wikipedia
 sum_total_tokens = 0
 
 
-def _call_llm_on_entity(entity: str, entity_type: str, llm_temp: int, llm_use_localhost: int) -> Optional[list[dict]]:
+def _call_llm_on_entity(entity: str, entity_type: str, llm_config: DictConfig) -> Optional[list[dict]]:
     global sum_total_tokens
     prompt = prompts.get(entity, entity_type, consts.prompts_yaml_location)
     system = prompts.system(entity_type, consts.prompts_yaml_location)
-    chat_response, total_tokens = llm.make_call(entity, system, prompt, llm_temp, llm_use_localhost)
+    chat_response, total_tokens = llm.make_call(entity, system, prompt, llm_config)
 
     sum_total_tokens += total_tokens
     assert chat_response
@@ -109,8 +110,7 @@ def _process_graph(
     G: nx.DiGraph,
     max_sum_total_tokens: int,
     output_folder: str,
-    llm_temp: int,
-    llm_use_localhost: int,
+    llm_config: DictConfig,
 ) -> nx.DiGraph:
     current_nodes = list(G.nodes.items()).copy()
     for node in current_nodes:
@@ -125,7 +125,7 @@ def _process_graph(
                 f"Processing node: {node_data['name']}, {node_data['wikipedia_link']}, level {node_data['level']}"
             )
             source_entity = get_entity_name(node_data["wikipedia_link"], node_data["name"])
-            llm_response_dict_list = _call_llm_on_entity(source_entity, entity_type, llm_temp, llm_use_localhost)
+            llm_response_dict_list = _call_llm_on_entity(source_entity, entity_type, llm_config)
             approx_total_cost = (sum_total_tokens / 1000) * 0.002
             logger.info(
                 f"Processed node '{source_entity}'. Sum total tokens for this run: {sum_total_tokens} (approx total cost ${approx_total_cost:,.4}, assuming gpt-3.5-turbo 4k model at Sep 2023 prices)"
@@ -134,13 +134,35 @@ def _process_graph(
                 G = _add_to_graph(G, level, source_entity, llm_response_dict_list)
                 G.nodes[source_entity]["processed"] = utils.PROCESSED["PR"]
                 utils.write_html(
-                    output_folder, entity_type, entity_root, level, G, llm_temp, llm_use_localhost, processed_only=True
+                    output_folder,
+                    entity_type,
+                    entity_root,
+                    level,
+                    G,
+                    llm_config.temperature,
+                    llm_config.use_localhost,
+                    processed_only=True,
                 )
                 utils.write_html(
-                    output_folder, entity_type, entity_root, level, G, llm_temp, llm_use_localhost, processed_only=False
+                    output_folder,
+                    entity_type,
+                    entity_root,
+                    level,
+                    G,
+                    llm_config.temperature,
+                    llm_config.use_localhost,
+                    processed_only=False,
                 )
                 try:
-                    utils.write_graphml(output_folder, entity_type, entity_root, level, G, llm_temp, llm_use_localhost)
+                    utils.write_graphml(
+                        output_folder,
+                        entity_type,
+                        entity_root,
+                        level,
+                        G,
+                        llm_config.temperature,
+                        llm_config.use_localhost,
+                    )
                 except Exception as ex:
                     logger.error(
                         f"write_graphml error processing {source_entity=} with {json.dumps(llm_response_dict_list, indent=2)=}"
@@ -164,8 +186,7 @@ def create_company_graph(
     levels: int,
     max_sum_total_tokens: int,
     output_folder: str,
-    llm_temp: int,
-    llm_use_localhost: int,
+    llm_config: DictConfig,
 ) -> nx.DiGraph:
     G = _make_root_graph(entity, entity_wikipedia)
 
@@ -173,8 +194,6 @@ def create_company_graph(
     for level in pbar:
         pbar.set_description(f"Processing level {level}")
         logger.debug(f"Processing {level=}")
-        G = _process_graph(
-            entity, entity_type, level, G, max_sum_total_tokens, output_folder, llm_temp, llm_use_localhost
-        )
+        G = _process_graph(entity, entity_type, level, G, max_sum_total_tokens, output_folder, llm_config)
 
     return G

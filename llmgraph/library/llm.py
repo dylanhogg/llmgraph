@@ -4,12 +4,13 @@ from datetime import datetime
 import openai
 from joblib import Memory
 from loguru import logger
+from omegaconf import DictConfig
+from openai.error import AuthenticationError
 from tenacity import retry, retry_if_not_exception_type, stop_after_attempt, wait_exponential
 
-from . import env
 from .classes import AppUsageException
 
-memory = Memory(".joblib_cache")
+memory = Memory(".joblib_cache", verbose=0)
 
 # TODO: try/catch! E.g.
 #       APIError: HTTP code 502 from API
@@ -33,30 +34,29 @@ def log_retry(state):
     before_sleep=log_retry,
     retry=retry_if_not_exception_type(AppUsageException),
 )
-def make_call(entity: str, system: str, prompt: str, temperature: int, use_localhost: bool) -> (str, int):
-    if use_localhost:
+def make_call(entity: str, system: str, prompt: str, llm_config: DictConfig) -> (str, int):
+    if llm_config.use_localhost:
         openai.api_key = "localhost"
         openai.api_base = "http://localhost:8081"
-        time.sleep(int(env.get("LLM_USE_LOCALHOST_SLEEP", 1)))
+        time.sleep(llm_config.localhost_sleep)
     else:
-        try:
-            key = env.get("OPENAI_API_KEY")
-        except Exception as ex:
-            raise AppUsageException(
-                "Expected environment variable 'OPENAI_API_KEY' to be set to use OpenAI API."
-            ) from ex
-        openai.api_key = key
+        openai.api_key = llm_config.api_key
 
     messages = [{"role": "system", "content": system}, {"role": "user", "content": prompt}]
 
     start = datetime.now()
-    api_response = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages, temperature=temperature)
+    try:
+        api_response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo", messages=messages, temperature=llm_config.temperature
+        )
+    except AuthenticationError as ex:
+        raise AppUsageException(str(ex)) from ex
     took = datetime.now() - start
 
     chat_response = api_response.choices[0].message.content
     total_tokens = int(api_response["usage"]["total_tokens"])
 
-    logger.trace(f"{use_localhost=}")
+    logger.trace(f"{llm_config.use_localhost=}")
     logger.trace(f"{system=}")
     logger.trace(f"{prompt=}")
     logger.trace(f"{took=}")

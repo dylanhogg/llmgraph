@@ -1,9 +1,10 @@
 import requests
 from joblib import Memory
 from loguru import logger
+from rich import print
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-memory = Memory(".joblib_cache")
+memory = Memory(".joblib_cache", verbose=0)
 
 
 def _rest_v1_summary(url: str, redirect: bool = True):
@@ -57,5 +58,9 @@ def get_wikipedia_data(url) -> (str, str, str, int):
 
     if status_code != 200:
         logger.debug(f"Unsuccessful request: {status_code=} for {url=}")
+        # NOTE: canonical is empty if 404
+        print(f"[bold green]Processing {url}[/bold green] (wikipedia status {status_code})")
+    else:
+        print(f"[bold green]Processing {url}[/bold green]")
 
     return summary, canonical, normalized, status_code

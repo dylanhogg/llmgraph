@@ -11,7 +11,7 @@ from pyvis.network import Network
 
 from . import consts
 
-memory = Memory(".joblib_cache")
+memory = Memory(".joblib_cache", verbose=0)
 
 PROCESSED = {
     "UN": 0,  # Unproocessed
