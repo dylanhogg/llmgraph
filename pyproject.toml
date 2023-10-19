@@ -1,10 +1,21 @@
 [tool.poetry]
 name = "llmgraph"
-version = "0.3.0"
-description = "LLM created knowledge graphs"
+version = "0.9.0"
+description = "Create knowledge graphs with LLMs"
 authors = ["Dylan Hogg <dylanhogg@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+repository = "https://github.com/dylanhogg/llmgraph"
+keywords = ["Knowledge graph", "LLM"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+    "Environment :: Console",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+]
 include = ["prompts.yaml"]
 
 [build-system]
