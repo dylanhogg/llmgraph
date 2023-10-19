@@ -48,14 +48,6 @@ It used a total of 7,650 gpt-3.5-turbo tokens to render 3 layers from the root '
 - `--llm-use-localhost` (INTEGER): LLM use localhost:8081 instead of OpenAI [default: 0]
 - `--help`: Show this message and exit.
 
-## Example Output
-
-TODO: llmgraph concepts-general "https://en.wikipedia.org/wiki/Knowledge_graph" --levels 3
-TODO: llmgraph company ???
-TODO: llmgraph software-engineering
-TODO: llmgraph machine-learning
-TODO: llmgraph movie
-
 ## Contributing
 
 We welcome contributions to llmgraph. To contribute, please follow these steps:
