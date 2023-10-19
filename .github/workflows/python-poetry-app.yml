@@ -1,4 +1,4 @@
-name: Build and Test Poetry application
+name: build
 
 on:
   push:
