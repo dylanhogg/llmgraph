@@ -98,16 +98,16 @@ def run(
         )
 
         took = datetime.now() - start
-        print(f"[bold green]Done, took {took.total_seconds()}s.[/bold green]")
+        print("")
+        print(f"[bold green]llmgraph finished, took {took.total_seconds()}s.[/bold green]")
         print(
-            f"[bold green]Output written to folder '{utils.get_output_path(output_folder, entity_type, entity_root)}' which includes:[/bold green]"
+            f"Output written to folder '{utils.get_output_path(output_folder, entity_type, entity_root)}' which includes, for each level:"
         )
-        print("[bold green]- An html file with only processed nodes as a fully connected graph[/bold green]")
-        print("[bold green]- An html file with both processed and extra unprocessed nodes[/bold green]")
-        print("[bold green]- A .graphml file (see http://graphml.graphdrawing.org/)[/bold green]")
-        print(
-            "[bold green]- A .gefx file, good for viewing in gephi (see https://gexf.net/ and https://gephi.org/)[/bold green]"
-        )
+        print(" - An html file with only processed nodes as a fully connected graph")
+        print(" - An html file with both processed and extra unprocessed edge nodes")
+        print(" - A .graphml file (see http://graphml.graphdrawing.org/)")
+        print(" - A .gefx file, good for viewing in gephi (see https://gexf.net/ and https://gephi.org/)")
+        print("")
 
     except AppUsageException as ex:
         print(f"[bold red]{str(ex)}[/bold red]")

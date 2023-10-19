@@ -130,7 +130,9 @@ def _process_graph(
             logger.debug(
                 f"Processing node: {node_data['name']}, {node_data['wikipedia_link']}, level {node_data['level']}"
             )
-            print(f"Processing [bold green]{node_data['name']}[/bold green] (level {node_data['level']})")
+            print(
+                f"Processing [bold green]{node_data['name']}[/bold green] (level {node_data['level']}, total tokens {sum_total_tokens:,})"
+            )
             source_entity = get_entity_name(node_data["wikipedia_link"], node_data["name"])
             llm_response_dict_list = _call_llm_on_entity(source_entity, entity_type, llm_config)
             approx_total_cost = (sum_total_tokens / 1000) * 0.002

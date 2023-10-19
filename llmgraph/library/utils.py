@@ -127,6 +127,8 @@ def write_html(
         nodes = [node for node, data in G.nodes(data=True) if data.get("processed") == PROCESSED["PR"]]
         G = G.subgraph(nodes)
         file_name = file_name.replace(".html", "_fully_connected.html")
+    else:
+        file_name = file_name.replace(".html", "_incl_unprocessed.html")
 
     nt = Network(height="1200px", width="100%", directed=True, cdn_resources="remote")
     nt.from_nx(G)
