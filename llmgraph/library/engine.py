@@ -140,50 +140,50 @@ def _process_graph(
             if llm_response_dict_list:
                 G = _add_to_graph(G, level, source_entity, llm_response_dict_list)
                 G.nodes[source_entity]["processed"] = utils.PROCESSED["PR"]
-                utils.write_html(
-                    output_folder,
-                    entity_type,
-                    entity_root,
-                    level,
-                    G,
-                    llm_config.temperature,
-                    llm_config.use_localhost,
-                    processed_only=True,
-                )
-                print_output = i == (len(current_nodes) - 1)
-                utils.write_html(
-                    output_folder,
-                    entity_type,
-                    entity_root,
-                    level,
-                    G,
-                    llm_config.temperature,
-                    llm_config.use_localhost,
-                    processed_only=False,
-                    print_output=print_output,
-                )
-                try:
-                    utils.write_graphml(
+                if level > 1:
+                    utils.write_html(
                         output_folder,
                         entity_type,
                         entity_root,
                         level,
                         G,
-                        llm_config.temperature,
-                        llm_config.use_localhost,
+                        llm_config,
+                        processed_only=True,
                     )
-                except Exception as ex:
-                    logger.error(
-                        f"write_graphml error processing {source_entity=} with {json.dumps(llm_response_dict_list, indent=2)=}"
+                    print_output = i == (len(current_nodes) - 1)  # print for last node only
+                    utils.write_html(
+                        output_folder,
+                        entity_type,
+                        entity_root,
+                        level,
+                        G,
+                        llm_config,
+                        processed_only=False,
+                        print_output=print_output,
                     )
-                    raise ex
+                    try:
+                        utils.write_graphml(
+                            output_folder,
+                            entity_type,
+                            entity_root,
+                            level,
+                            G,
+                            llm_config,
+                        )
+                    except Exception as ex:
+                        logger.error(
+                            f"write_graphml error processing {source_entity=} with {json.dumps(llm_response_dict_list, indent=2)=}"
+                        )
+                        raise ex
             else:
                 # TODO: Retry, with increased temperature?
                 G.nodes[source_entity]["processed"] = utils.PROCESSED["ER"]
                 return G
 
     if sum_total_tokens > max_sum_total_tokens:
-        raise AppUsageException(f"Token limit hit: {sum_total_tokens=}, {max_sum_total_tokens=}")
+        raise AppUsageException(
+            f"Max token limit hit: {sum_total_tokens=}, {max_sum_total_tokens=}. See argument '--max_sum_total_tokens' to set higher value. This is a safety feature to prevent excessive costs."
+        )
 
     return G
 

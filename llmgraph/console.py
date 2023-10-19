@@ -6,7 +6,7 @@ from omegaconf import OmegaConf
 from rich import print
 from typing_extensions import Annotated
 
-from .library import consts, engine, env, log
+from .library import consts, engine, env, log, utils
 from .library.classes import AppUsageException
 
 typer_app = typer.Typer()
@@ -25,12 +25,14 @@ def run(
     entity_root: Annotated[
         str, typer.Option(help="Optional root entity name override if different from wikipedia page title")
     ] = None,
-    levels: Annotated[int, typer.Option(help="Number of levels deep to process")] = 2,
+    levels: Annotated[int, typer.Option(help="Number of levels deep to construct from the central root entity")] = 2,
     max_sum_total_tokens: Annotated[int, typer.Option(help="Maximum sum of tokens for graph generation")] = 200000,
-    output_folder: Annotated[str, typer.Option(help="Folder location to write outputs")] = "./_output/",
-    llm_model: Annotated[str, typer.Option(help="The model name")] = "gpt-3.5-turbo",
-    llm_temp: Annotated[float, typer.Option(help="LLM temperature value")] = 0.0,
-    llm_use_localhost: Annotated[int, typer.Option(help="LLM use localhost")] = 0,
+    output_folder: Annotated[str, typer.Option(help="Folder location to write outputs")] = consts.default_output_folder,
+    llm_model: Annotated[str, typer.Option(help="The model name")] = consts.default_llm_model,
+    llm_temp: Annotated[float, typer.Option(help="LLM temperature value")] = consts.default_llm_temp,
+    llm_use_localhost: Annotated[
+        int, typer.Option(help="LLM use localhost:8081 instead of openai")
+    ] = consts.default_llm_use_localhost,
     version: Annotated[
         Optional[bool], typer.Option("--version", help="Display llmgraph version", callback=version_callback)
     ] = None,
@@ -56,7 +58,9 @@ def run(
             entity_root = entity_wikipedia[wiki_loc:].replace("/wiki/", "").replace("_", " ")  # TODO: review
             custom_entity_root = False
 
-        print(f"Running with {entity_type=}, {entity_wikipedia=}, {entity_root=}, {custom_entity_root=}, {levels=}")
+        print(
+            f"Running with {entity_type=}, {entity_wikipedia=}, {entity_root=}, {custom_entity_root=}, {levels=}, {llm_model=}, {llm_temp=}, {output_folder=}"
+        )
         if levels > 4:
             print(
                 f"[bold orange3]Running with {levels=} - this will take many LLM calls, watch your costs if using a paid API! Press Y to continue...[/bold orange3]"
@@ -94,8 +98,15 @@ def run(
         )
 
         took = datetime.now() - start
+        print(f"[bold green]Done, took {took.total_seconds()}s.[/bold green]")
         print(
-            f"[bold green]Done, took {took.total_seconds()}s. Output written to folder '{output_folder}'[/bold green]"
+            f"[bold green]Output written to folder '{utils.get_output_path(output_folder, entity_type, entity_root)}' which includes:[/bold green]"
+        )
+        print("[bold green]- An html file with only processed nodes as a fully connected graph[/bold green]")
+        print("[bold green]- An html file with both processed and extra unprocessed nodes[/bold green]")
+        print("[bold green]- A .graphml file (see http://graphml.graphdrawing.org/)[/bold green]")
+        print(
+            "[bold green]- A .gefx file, good for viewing in gephi (see https://gexf.net/ and https://gephi.org/)[/bold green]"
         )
 
     except AppUsageException as ex:

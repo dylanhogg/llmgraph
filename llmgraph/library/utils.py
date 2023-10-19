@@ -7,6 +7,7 @@ from urllib.parse import unquote
 import networkx as nx
 from joblib import Memory
 from loguru import logger
+from omegaconf import DictConfig
 from pyvis.network import Network
 from rich import print
 
@@ -92,10 +93,19 @@ def _add_visual_attributes(G: nx.DiGraph):
     return G
 
 
-def _get_output_path(output_folder: str, entity_type: str, entity_root: str):
+def get_output_path(output_folder: str, entity_type: str, entity_root: str):
     output_path = Path(output_folder) / entity_type / _clean_entity_name(entity_root)
     Path(output_path).mkdir(parents=True, exist_ok=True)
     return output_path
+
+
+def _get_filename(entity_type: str, entity_root: str, level: int, llm_config: DictConfig, ext: str):
+    llm_temp = f"_T{llm_config.temperature}" if llm_config.temperature != consts.default_llm_temp else ""
+    llm_model = f"_{llm_config.model}" if llm_config.model != consts.default_llm_model else ""
+    llm_localhost = (
+        f"_L{llm_config.use_localhost}" if llm_config.use_localhost != consts.default_llm_use_localhost else ""
+    )
+    return f"{entity_type}_{_clean_entity_name(entity_root)}_v{consts.version}{llm_localhost}{llm_temp}{llm_model}_level{level}.{ext}"
 
 
 def write_html(
@@ -104,24 +114,19 @@ def write_html(
     entity_root: str,
     level: int,
     G: nx.DiGraph,
-    llm_temp: float,
-    llm_use_localhost: int,
+    llm_config: DictConfig,
     processed_only: bool,
-    min_level: int = 1,
     print_output: bool = False,
 ):
-    if level <= min_level:
-        return
-
-    output_path = _get_output_path(output_folder, entity_type, entity_root)
-    file_name = f"{entity_type}_{_clean_entity_name(entity_root)}_v{consts.version}_LH{llm_use_localhost}_L{level}_T{llm_temp}.html"
+    output_path = get_output_path(output_folder, entity_type, entity_root)
+    file_name = _get_filename(entity_type, entity_root, level, llm_config, "html")
 
     G = _add_visual_attributes(G)
 
     if processed_only:
         nodes = [node for node, data in G.nodes(data=True) if data.get("processed") == PROCESSED["PR"]]
         G = G.subgraph(nodes)
-        file_name = file_name.replace(".html", "_ALL_PROCESSED.html")
+        file_name = file_name.replace(".html", "_fully_connected.html")
 
     nt = Network(height="1200px", width="100%", directed=True, cdn_resources="remote")
     nt.from_nx(G)
@@ -138,27 +143,20 @@ def write_html(
 
 
 def write_graphml(
-    output_folder: str,
-    entity_type: str,
-    entity_root: str,
-    level: int,
-    G: nx.DiGraph,
-    llm_temp: float,
-    llm_use_localhost: int,
-    min_level: int = 1,
+    output_folder: str, entity_type: str, entity_root: str, level: int, G: nx.DiGraph, llm_config: DictConfig
 ):
-    if level < min_level:
-        return
-
-    output_path = _get_output_path(output_folder, entity_type, entity_root)
+    output_path = get_output_path(output_folder, entity_type, entity_root)
     nx.write_graphml(
         G,
-        f"{output_path}/{entity_type}_{_clean_entity_name(entity_root)}_v{consts.version}_LH{llm_use_localhost}_L{level}_T{llm_temp}.graphml",
+        str(output_path / _get_filename(entity_type, entity_root, level, llm_config, "graphml")),
     )
     nx.write_gexf(
-        G,
-        f"{output_path}/{entity_type}_{_clean_entity_name(entity_root)}_v{consts.version}_LH{llm_use_localhost}_L{level}_T{llm_temp}.gephi.gexf",
+        G, str(output_path / _get_filename(entity_type, entity_root, level, llm_config, "gexf"))  # Can load into gephi
     )
+
+    # NOTE: write_dot needs Graphviz and either PyGraphviz or pydot
+    # from networkx.drawing.nx_agraph import write_dot
+    # write_dot(G, str(output_path / _get_filename(entity_type, entity_root, level, llm_config, "dot")))
 
 
 def extract_json_array(text) -> Optional[list[dict]]:
