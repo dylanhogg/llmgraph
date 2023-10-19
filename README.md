@@ -37,6 +37,8 @@ llmgraph machine-learning "https://en.wikipedia.org/wiki/Artificial_intelligence
 
 It used a total of 7,650 gpt-3.5-turbo tokens to render 3 layers from the root 'Artificial Intelligence' node.
 
+Note that you will need to set an environment variable '`OPENAI_API_KEY`' prior to running. See the [OpenAI docs](https://platform.openai.com/docs/quickstart/step-2-setup-your-api-key) for more info.
+
 ### Required Arguments
 
 - `entity_type` (TEXT): Entity type (e.g. movie)
