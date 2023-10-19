@@ -20,17 +20,17 @@ pip install llmgraph
 
 In addition to GraphML and GEXF formats, an HTML [pyvis](https://github.com/WestHealth/pyvis) physics enabled graph can be viewed:
 
-<!-- ![alt text](https://github.com/dylanhogg/llmgraph/blob/main/docs/machine-learning_artificial-intelligence_v0.3.0_level3.png?raw=true) -->
-
-![machine learning example output](./docs/machine-learning_artificial-intelligence_v0.3.0_level3.png?raw=true)
+![example machine learning output](https://github.com/dylanhogg/llmgraph/blob/main/docs/img/machine-learning_artificial-intelligence_v0.3.0_level3.png?raw=true)
 
 ## Example Usage
 
-The example above was generated with the following command and used 7,650 total gpt-3.5-turbo tokens:
+The example above was generated with the following command:
 
 ```bash
 llmgraph machine-learning "https://en.wikipedia.org/wiki/Artificial_intelligence" --levels 3
 ```
+
+It used a total of 7,650 gpt-3.5-turbo tokens to render 3 layers from the root 'Artificial Intelligence' node.
 
 ### Required Arguments
 

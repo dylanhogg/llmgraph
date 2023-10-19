@@ -6,6 +6,7 @@ log/
 venv*/
 _output/
 _output*/
+_temp/
 *.log
 .DS_Store
 .pypirc
