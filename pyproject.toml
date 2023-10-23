@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "llmgraph"
-version = "1.0.0"
+version = "1.0.1"
 description = "Create knowledge graphs with LLMs"
 authors = ["Dylan Hogg <dylanhogg@gmail.com>"]
 license = "MIT"
