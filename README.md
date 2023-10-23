@@ -33,9 +33,11 @@ pip install llmgraph
 
 In addition to GraphML and GEXF formats, an HTML [pyvis](https://github.com/WestHealth/pyvis) physics enabled graph can be viewed:
 
+### Artificial Intelligence example
+
 ![example machine-learning output](https://github.com/dylanhogg/llmgraph/blob/main/docs/img/machine-learning_artificial-intelligence_v1.0.0_level4_fully_connected.png?raw=true)
 <sub>Generate above machine-learning graph: `llmgraph machine-learning "https://en.wikipedia.org/wiki/Artificial_intelligence" --levels 4`
-View entire graph: <a target="_blank" href="https://blog.infocruncher.com/html/llmgraph/machine-learning_artificial-intelligence_v1.0.0_level4_fully_connected.html">machine-learning_artificial-intelligence_v1.0.0_level4_fully_connected.html</a></sub>
+<br />View entire graph: <a target="_blank" href="https://blog.infocruncher.com/html/llmgraph/machine-learning_artificial-intelligence_v1.0.0_level4_fully_connected.html">machine-learning_artificial-intelligence_v1.0.0_level4_fully_connected.html</a></sub>
 
 ## llmgraph Usage
 
@@ -90,21 +92,29 @@ Here are some more examples of the HTML graph output for different entity types 
 
 Install llmgraph to create your own knowledge graphs! Feel free to share interesting results in the [issue section](https://github.com/dylanhogg/llmgraph/issues/new) above with a documentation label :)
 
+### Knowledge graph concept example
+
 ![example concepts-general output](https://github.com/dylanhogg/llmgraph/blob/main/docs/img/concepts-general_knowledge-graph_v1.0.0_level4_fully_connected.png?raw=true)
 <sub>Command to generate above concepts-general graph: `llmgraph concepts-general "https://en.wikipedia.org/wiki/Knowledge_graph" --levels 4`
 View entire graph: <a target="_blank" href="https://blog.infocruncher.com/html/llmgraph/concepts-general_knowledge-graph_v1.0.0_level4_fully_connected.html">concepts-general_knowledge-graph_v1.0.0_level4_fully_connected.html</a></sub>
 
+### Inception movie example
+
 ![example movie output](https://github.com/dylanhogg/llmgraph/blob/main/docs/img/movie_inception_v1.0.0_level4_fully_connected.png?raw=true)
 <sub>Command to generate above movie graph: `llmgraph movie "https://en.wikipedia.org/wiki/Inception" --levels 4`
-View entire graph: <a target="_blank" href="https://blog.infocruncher.com/html/llmgraph/movie_inception_v1.0.0_level4_fully_connected.html">movie_inception_v1.0.0_level4_fully_connected.html</a></sub>
+<br />View entire graph: <a target="_blank" href="https://blog.infocruncher.com/html/llmgraph/movie_inception_v1.0.0_level4_fully_connected.html">movie_inception_v1.0.0_level4_fully_connected.html</a></sub>
+
+### OpenAI company example
 
 ![example company output](https://github.com/dylanhogg/llmgraph/blob/main/docs/img/company_openai_v1.0.0_level4_fully_connected.png?raw=true)
 <sub>Command to generate above company graph: `llmgraph company "https://en.wikipedia.org/wiki/OpenAI" --levels 4`
-View entire graph: <a target="_blank" href="https://blog.infocruncher.com/html/llmgraph/company_openai_v1.0.0_level4_fully_connected.html">company_openai_v1.0.0_level4_fully_connected.html</a></sub>
+<br />View entire graph: <a target="_blank" href="https://blog.infocruncher.com/html/llmgraph/company_openai_v1.0.0_level4_fully_connected.html">company_openai_v1.0.0_level4_fully_connected.html</a></sub>
+
+### John von Neumann people example
 
 ![example people-historical output](https://github.com/dylanhogg/llmgraph/blob/main/docs/img/people-historical_john-von-neumann_v1.0.0_level4_fully_connected.png?raw=true)
 <sub>Command to generate above people-historical graph: `llmgraph people-historical "https://en.wikipedia.org/wiki/John_von_Neumann" --levels 4`
-View entire graph: <a target="_blank" href="https://blog.infocruncher.com/html/llmgraph/people-historical_john-von-neumann_v1.0.0_level4_fully_connected.html">people-historical_john-von-neumann_v1.0.0_level4_fully_connected.html</a></sub>
+<br />View entire graph: <a target="_blank" href="https://blog.infocruncher.com/html/llmgraph/people-historical_john-von-neumann_v1.0.0_level4_fully_connected.html">people-historical_john-von-neumann_v1.0.0_level4_fully_connected.html</a></sub>
 
 ## Example of Prompt Used to Generate Graph
 
