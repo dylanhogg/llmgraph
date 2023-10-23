@@ -74,7 +74,9 @@ def run(
         llm_api_key = env.get("OPENAI_API_KEY", "")
         if not llm_use_localhost and not llm_api_key:
             raise AppUsageException(
-                "Expected environment variable 'OPENAI_API_KEY' to be set to use OpenAI API. Alternatively you can use the '--llm_use_localhost 1' argument to use a local LLM server."
+                "Expected an environment variable 'OPENAI_API_KEY' to be set to use OpenAI API.\n"
+                "See the OpenAI docs for more info: https://platform.openai.com/docs/quickstart/step-2-setup-your-api-key"
+                "\nAlternatively you can use the '--llm_use_localhost 1' argument to use a local LLM server."
             )
 
         llm_config = OmegaConf.create(
