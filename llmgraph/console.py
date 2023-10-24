@@ -113,7 +113,11 @@ def run(
 
     except AppUsageException as ex:
         print(f"[bold red]{str(ex)}[/bold red]")
+        print("")
+        print("For more information, try 'llmgraph --help'.")
         raise typer.Exit(code=1) from ex
     except Exception as ex:
         print(f"[bold red]Unexpected exception: {str(ex)}[/bold red]")
+        print("")
+        print("For more information, try 'llmgraph --help'.")
         raise typer.Exit(code=100) from ex
