@@ -21,6 +21,13 @@ concepts-general:
   entity: concept name
   top_n: 5
 
+location:
+  system: You are knowledgeable about geography, places, cities, countries, states, provinces, regions as well as iconic locations, buildings and architecture.
+  knowledgeable_about: geography, places, cities, countries, states, provinces, regions as well as iconic locations, buildings and architecture
+  entities: Locations
+  entity: Location name
+  top_n: 5
+
 food:
   system: You are highly knowledgeable about food, cooking, recipes and flavors
   knowledgeable_about: food, cooking, recipes and flavors
