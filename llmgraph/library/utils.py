@@ -83,12 +83,13 @@ def _add_visual_attributes(G: nx.DiGraph):
         G.nodes[entity]["group"] = group  # Colour of node
         # G.nodes[entity]["level"] = level  # NOTE: used in some hierarchical physics layouts
 
-    # TODO: edge labels...
     # current_edges = list(G.edges.items()).copy()
     # for edge in current_edges:
-    #     entity = edge[0]
-    #     name = G.edges[entity]
-    #     G.edges[entity]["label"] = name
+    #     similarity = edge[1]["similarity"]
+    #     reason = edge[1]["reason"]
+    #     # TODO: BUG: Unfortunately there is a bug in pyvis that doesn't show title on mouseover for edges. Setting label works, but is messy.
+    #     edge[1]["title"] = f"({similarity:.2f}) {reason}"  # Mouseover html
+    #     # edge[1]["label"] = f"({similarity:.2f}) {reason}"  # Displayed on edge in UI
 
     return G
 

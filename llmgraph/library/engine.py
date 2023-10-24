@@ -94,7 +94,6 @@ def _add_to_graph(G: nx.DiGraph, level: int, source_entity: str, json_array: lis
                 wikipedia_normalized=normalized,
                 wikipedia_resp_code=status_code,
                 wikipedia_content=summary[0:500] if summary else "",  # TODO: review and sync with _make_root_graph(..)
-                reason_for_similarity=entity["reason_for_similarity"],
                 processed=utils.PROCESSED["UN"],
                 node_count=node_count,
             )
@@ -103,7 +102,9 @@ def _add_to_graph(G: nx.DiGraph, level: int, source_entity: str, json_array: lis
 
         if source_entity != target_entity:
             # Ignore self loops
-            G.add_edge(source_entity, target_entity, weight=entity["similarity"])
+            G.add_edge(
+                source_entity, target_entity, similarity=entity["similarity"], reason=entity["reason_for_similarity"]
+            )
 
     return G
 
