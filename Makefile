@@ -54,9 +54,11 @@ ruff-check:
 ruff:
 	poetry run ruff check . --fix
 
-run-pre-commit:
+pre-commit:
 	poetry run pre-commit run --all-files
 
+pip-audit:
+	poetry run pip-audit
 
 .DEFAULT_GOAL := help
 .PHONY: help

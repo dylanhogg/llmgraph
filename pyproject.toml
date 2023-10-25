@@ -46,6 +46,7 @@ black = "^23.9.1"
 ruff = "^0.0.292"
 coverage = "^7.3.2"
 pre-commit = "^3.4.0"
+pip-audit = "^2.6.1"
 
 [tool.poetry.scripts]
 llmgraph = 'llmgraph.console:typer_app'
