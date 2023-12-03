@@ -60,12 +60,12 @@ def run(
             f"Running with {entity_type=}, {entity_wikipedia=}, {entity_root=}, {custom_entity_root=}, {levels=}, {llm_model=}, {llm_temp=}, {output_folder=}"
         )
 
-        if levels > 4 and not llm_base_url:
+        if levels > 4:
             print(
                 f"[bold orange3]Running with {levels=} - this will take many LLM calls, watch your costs if using a paid API! Press Y to continue...[/bold orange3]"
             )
-            user_input = input()
-            if user_input.lower() != "y":
+
+            if input().lower() != "y":
                 raise AppUsageException(f"User did not press Y to continue running with {levels=}.")
 
         start = datetime.now()
@@ -75,7 +75,7 @@ def run(
                 "model": llm_model,
                 "temperature": llm_temp,
                 "base_url": llm_base_url,
-                "localhost_sleep": int(env.get("LLM_LOCAL_SLEEP", 0)),
+                "delay": int(env.get("LLM_DELAY", 0)),
             }
         )
 

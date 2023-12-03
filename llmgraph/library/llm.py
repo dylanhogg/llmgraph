@@ -1,3 +1,4 @@
+from time import sleep
 from datetime import datetime
 
 from joblib import Memory
@@ -45,9 +46,10 @@ def make_call(entity: str, system: str, prompt: str, llm_config: DictConfig) -> 
         )
     except Exception as ex:
         logger.exception(f"Exception from LLM call: {ex}")
-        raise AppUsageException("Exception from LLM call") from ex
+        raise AppUsageException(str(ex)) from ex
 
     took = datetime.now() - start
+    sleep(llm_config.delay)
 
     chat_response = api_response.choices[0].message.content
     total_tokens = int(api_response["usage"]["total_tokens"])
