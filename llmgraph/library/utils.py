@@ -103,10 +103,7 @@ def get_output_path(output_folder: str, entity_type: str, entity_root: str):
 def _get_filename(entity_type: str, entity_root: str, level: int, llm_config: DictConfig, ext: str):
     llm_temp = f"_T{llm_config.temperature}" if llm_config.temperature != consts.default_llm_temp else ""
     llm_model = f"_{llm_config.model}" if llm_config.model != consts.default_llm_model else ""
-    llm_localhost = (
-        f"_L{llm_config.use_localhost}" if llm_config.use_localhost != consts.default_llm_use_localhost else ""
-    )
-    return f"{entity_type}_{_clean_entity_name(entity_root)}_v{consts.version}{llm_localhost}{llm_temp}{llm_model}_level{level}.{ext}"
+    return f"{entity_type}_{_clean_entity_name(entity_root)}_v{consts.version}{llm_temp}{_clean_entity_name(llm_model)}_level{level}.{ext}"
 
 
 def write_html(
