@@ -30,9 +30,7 @@ def run(
     output_folder: Annotated[str, typer.Option(help="Folder location to write outputs")] = consts.default_output_folder,
     llm_model: Annotated[str, typer.Option(help="The model name")] = consts.default_llm_model,
     llm_temp: Annotated[float, typer.Option(help="LLM temperature value")] = consts.default_llm_temp,
-    llm_use_localhost: Annotated[
-        int, typer.Option(help="LLM use localhost:8081 instead of openai")
-    ] = consts.default_llm_use_localhost,
+    llm_base_url: Annotated[str, typer.Option(help="LLM will use custom base URL instead of the automatic one")] = None,
     version: Annotated[
         Optional[bool], typer.Option("--version", help="Display llmgraph version", callback=version_callback)
     ] = None,
@@ -61,31 +59,23 @@ def run(
         print(
             f"Running with {entity_type=}, {entity_wikipedia=}, {entity_root=}, {custom_entity_root=}, {levels=}, {llm_model=}, {llm_temp=}, {output_folder=}"
         )
+
         if levels > 4:
             print(
                 f"[bold orange3]Running with {levels=} - this will take many LLM calls, watch your costs if using a paid API! Press Y to continue...[/bold orange3]"
             )
-            user_input = input()
-            if user_input.lower() != "y":
+
+            if input().lower() != "y":
                 raise AppUsageException(f"User did not press Y to continue running with {levels=}.")
 
         start = datetime.now()
 
-        llm_api_key = env.get("OPENAI_API_KEY", "")
-        if not llm_use_localhost and not llm_api_key:
-            raise AppUsageException(
-                "Expected an environment variable 'OPENAI_API_KEY' to be set to use OpenAI API.\n"
-                "See the OpenAI docs for more info: https://platform.openai.com/docs/quickstart/step-2-setup-your-api-key"
-                "\nAlternatively you can use the '--llm_use_localhost 1' argument to use a local LLM server."
-            )
-
         llm_config = OmegaConf.create(
             {
-                "api_key": llm_api_key,
                 "model": llm_model,
                 "temperature": llm_temp,
-                "use_localhost": llm_use_localhost,
-                "localhost_sleep": int(env.get("LLM_USE_LOCALHOST_SLEEP", 0)),
+                "base_url": llm_base_url,
+                "delay": int(env.get("LLM_DELAY", 0)),
             }
         )
 
