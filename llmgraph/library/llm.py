@@ -1,11 +1,11 @@
-from time import sleep
 from datetime import datetime
+from time import sleep
 
 from joblib import Memory
+from litellm import completion
 from loguru import logger
 from omegaconf import DictConfig
 from tenacity import retry, retry_if_not_exception_type, stop_after_attempt, wait_exponential
-from litellm import completion
 
 from .classes import AppUsageException
 
