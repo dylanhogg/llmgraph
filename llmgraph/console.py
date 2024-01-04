@@ -1,4 +1,7 @@
+import os
+import webbrowser
 from datetime import datetime
+from pathlib import Path
 from typing import Optional
 
 import typer
@@ -16,6 +19,22 @@ def version_callback(value: bool):
     if value:
         print(f"llmgraph version: {consts.version}")
         raise typer.Exit()
+
+
+def open_in_browser(concept_output_folder: Path):
+    while True:
+        files = [f for f in os.listdir(concept_output_folder) if "fully_connected" in f]
+        if len(files) == 0:
+            break
+        filename = concept_output_folder / sorted(files)[-1]
+        print(f"Fully connected html file: '{filename}'")
+        user_input = input("Press 'Y' to open the fully connected html file in a browser, or Enter/Return to finish: ")
+        if user_input.lower() == "y":
+            abs_file = filename.resolve()
+            webbrowser.open(f"file://{abs_file}")
+            break
+        elif user_input.lower() == "":
+            break
 
 
 @typer_app.command()
@@ -90,16 +109,20 @@ def run(
         )
 
         took = datetime.now() - start
+        concept_output_folder = utils.get_output_path(output_folder, entity_type, entity_root)
         print("")
         print(f"[bold green]llmgraph finished, took {took.total_seconds()}s.[/bold green]")
-        print(
-            f"Output written to folder '{utils.get_output_path(output_folder, entity_type, entity_root)}' which includes, for each level:"
-        )
+        print(f"Output written to folder '{concept_output_folder}' which includes, for each level:")
         print(" - An html file with only processed nodes as a fully connected graph")
         print(" - An html file with both processed and extra unprocessed edge nodes")
         print(" - A .graphml file (see http://graphml.graphdrawing.org/)")
         print(" - A .gefx file, good for viewing in gephi (see https://gexf.net/ and https://gephi.org/)")
         print("")
+        open_in_browser(concept_output_folder)
+        print("")
+        print(
+            "Thank you for using llmgraph! Please consider starring the project on github: https://github.com/dylanhogg/llmgraph"
+        )
 
     except AppUsageException as ex:
         print(f"[bold red]{str(ex)}[/bold red]")
