@@ -2,6 +2,7 @@
 
 [![pypi Version](https://img.shields.io/pypi/v/llmgraph.svg?logo=pypi)](https://pypi.org/project/llmgraph/)
 [![build](https://github.com/dylanhogg/llmgraph/actions/workflows/python-poetry-app.yml/badge.svg)](https://github.com/dylanhogg/llmgraph/actions/workflows/python-poetry-app.yml)
+[![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dylanhogg/llmgraph/blob/master/notebooks/llmgraph_example.ipynb)
 
 <!-- [![Dependencies](https://img.shields.io/librariesio/github/dylanhogg/llmgraph)](https://libraries.io/github/dylanhogg/llmgraph) -->
 
@@ -30,6 +31,10 @@ You can install llmgraph using pip, ideally into a Python [virtual environment](
 ```bash
 pip install llmgraph
 ```
+
+Alternatively, checkout [an example notebook](https://github.com/dylanhogg/llmgraph/blob/main/notebooks/llmgraph_example.ipynb) that uses llmgraph and you can run directly in Google Colab.
+
+[![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dylanhogg/llmgraph/blob/master/notebooks/llmgraph_example.ipynb)
 
 ## Example Output
 
