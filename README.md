@@ -1,6 +1,6 @@
 # llmgraph
 
-[![PyPI version](https://badge.fury.io/py/llmgraph.svg)](https://badge.fury.io/py/llmgraph)
+[![PyPI version](https://badge.fury.io/py/llmgraph.svg?1)](https://badge.fury.io/py/llmgraph)
 [![build](https://github.com/dylanhogg/llmgraph/actions/workflows/python-poetry-app.yml/badge.svg)](https://github.com/dylanhogg/llmgraph/actions/workflows/python-poetry-app.yml)
 [![Latest Tag](https://img.shields.io/github/v/tag/dylanhogg/llmgraph)](https://github.com/dylanhogg/llmgraph/tags)
 [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dylanhogg/llmgraph/blob/master/notebooks/llmgraph_example.ipynb)
