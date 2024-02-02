@@ -25,7 +25,7 @@ For a background on knowledge graphs see a [youtube overview by Computerphile](h
 
 ## Installation
 
-You can install llmgraph using pip:
+You can install llmgraph using pip, ideally into a Python [virtual environment](https://realpython.com/python-virtual-environments-a-primer/#create-it):
 
 ```bash
 pip install llmgraph
@@ -194,3 +194,4 @@ Thanks to @breitburg for implementing the LiteLLM updates.
 - https://arxiv.org/abs/2206.14268 - BertNet: Harvesting Knowledge Graphs with Arbitrary Relations from Pretrained Language Models
 - https://github.com/aws/graph-notebook - Graph Notebook: easily query and visualize graphs
 - https://github.com/KiddoZhu/NBFNet-PyG - PyG re-implementation of Neural Bellman-Ford Networks
+- https://caminao.blog/knowledge-management-booklet/a-hitchhikers-guide-to-knowledge-galaxies/ - A Hitchhiker’s Guide to Knowledge Galaxies
