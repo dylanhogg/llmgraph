@@ -50,6 +50,7 @@ def run(
     llm_model: Annotated[str, typer.Option(help="The model name")] = consts.default_llm_model,
     llm_temp: Annotated[float, typer.Option(help="LLM temperature value")] = consts.default_llm_temp,
     llm_base_url: Annotated[str, typer.Option(help="LLM will use custom base URL instead of the automatic one")] = None,
+    allow_user_input: Annotated[bool, typer.Option(help="Allow command line user input")] = True,
     version: Annotated[
         Optional[bool], typer.Option("--version", help="Display llmgraph version", callback=version_callback)
     ] = None,
@@ -81,16 +82,22 @@ def run(
 
         if levels > 4:
             print(
-                f"[bold orange3]Running with {levels=} - this will take many LLM calls, watch your costs if using a paid API! Press Y to continue...[/bold orange3]"
+                f"[bold orange3]Running with {levels=} - this will take many LLM calls, watch your costs if using a paid API![/bold orange3]"
+            )
+            print(
+                "[bold orange3]It is recommended to start with levels=3 and build up since calls are cached with the same input parameter values.[/bold orange3]"
             )
 
-            if input().lower() != "y":
-                raise AppUsageException(f"User did not press Y to continue running with {levels=}.")
+            if allow_user_input:
+                print(f"[bold orange3]Press Y to continue with {levels=}...[/bold orange3]")
+                if input().lower() != "y":
+                    raise AppUsageException(f"User did not press Y to continue running with {levels=}.")
 
         start = datetime.now()
 
         llm_config = OmegaConf.create(
             {
+                "version": consts.version,
                 "model": llm_model,
                 "temperature": llm_temp,
                 "base_url": llm_base_url,
@@ -118,8 +125,9 @@ def run(
         print(" - A .graphml file (see http://graphml.graphdrawing.org/)")
         print(" - A .gefx file, good for viewing in gephi (see https://gexf.net/ and https://gephi.org/)")
         print("")
-        open_in_browser(concept_output_folder)
-        print("")
+        if allow_user_input:
+            open_in_browser(concept_output_folder)
+            print("")
         print(
             "Thank you for using llmgraph! Please consider starring the project on github: https://github.com/dylanhogg/llmgraph"
         )
@@ -128,9 +136,8 @@ def run(
         print(f"[bold red]{str(ex)}[/bold red]")
         print("")
         print("For more information, try 'llmgraph --help'.")
-        raise typer.Exit(code=1) from ex
+
     except Exception as ex:
         print(f"[bold red]Unexpected exception: {str(ex)}[/bold red]")
         print("")
         print("For more information, try 'llmgraph --help'.")
-        raise typer.Exit(code=100) from ex
