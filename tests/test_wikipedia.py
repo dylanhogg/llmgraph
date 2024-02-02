@@ -6,7 +6,10 @@ def test_restapi_no_redirect_page():
         assert status_code == 200
         assert response_json != {}
         assert canonical == page
-        assert "A neural network is a neural circuit of biological neurons" in summary
+        assert (
+            "A neural network, also called a biological neural network, is an interconnected population of neurons."
+            in summary
+        )
         assert response_json["titles"]["canonical"] == page
         assert canonical == page
         assert response_json["titles"]["normalized"] == page.replace("_", " ")
@@ -30,7 +33,9 @@ def test_restapi_no_redirect_page():
 def test_restapi_redirect_page():
     page = "Neural_networks"  # Page redirects to:
     redirect_to_page = "Neural_network"
-    expected_text = "A neural network is a neural circuit of biological neurons"
+    expected_text = (
+        "A neural network, also called a biological neural network, is an interconnected population of neurons."
+    )
 
     status_code, response_json, canonical, normalized, summary, headers = wikipedia._rest_v1_summary(
         "https://en.wikipedia.org/wiki/" + page, redirect=True
