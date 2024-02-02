@@ -1,5 +1,5 @@
 run:
-	llmgraph concepts-general "https://en.wikipedia.org/wiki/Many-worlds_interpretation" --levels 2
+	poetry run llmgraph concepts-general https://en.wikipedia.org/wiki/Large_language_model --levels 2 --llm-model gpt-3.5-turbo --llm-temp 0.0
 
 build:
 	poetry build
