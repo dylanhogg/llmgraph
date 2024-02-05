@@ -3,6 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/llmgraph.svg?1)](https://badge.fury.io/py/llmgraph)
 [![build](https://github.com/dylanhogg/llmgraph/actions/workflows/python-poetry-app.yml/badge.svg)](https://github.com/dylanhogg/llmgraph/actions/workflows/python-poetry-app.yml)
 [![Latest Tag](https://img.shields.io/github/v/tag/dylanhogg/llmgraph)](https://github.com/dylanhogg/llmgraph/tags)
+[![Downloads](https://static.pepy.tech/badge/llmgraph)](https://pepy.tech/project/llmgraph)
 [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dylanhogg/llmgraph/blob/master/notebooks/llmgraph_example.ipynb)
 
 <!-- [![Dependencies](https://img.shields.io/librariesio/github/dylanhogg/llmgraph)](https://libraries.io/github/dylanhogg/llmgraph) -->
@@ -198,6 +199,8 @@ Thanks to @breitburg for implementing the LiteLLM updates.
 - https://arxiv.org/abs/2211.10511 - Knowledge Graph Generation From Text
 - https://arxiv.org/abs/2310.04562 - Towards Foundation Models for Knowledge Graph Reasoning
 - https://arxiv.org/abs/2206.14268 - BertNet: Harvesting Knowledge Graphs with Arbitrary Relations from Pretrained Language Models
+- https://arxiv.org/abs/2312.02783 - Large Language Models on Graphs: A Comprehensive Survey
 - https://github.com/aws/graph-notebook - Graph Notebook: easily query and visualize graphs
 - https://github.com/KiddoZhu/NBFNet-PyG - PyG re-implementation of Neural Bellman-Ford Networks
 - https://caminao.blog/knowledge-management-booklet/a-hitchhikers-guide-to-knowledge-galaxies/ - A Hitchhiker’s Guide to Knowledge Galaxies
+- https://github.com/PeterGriffinJin/Awesome-Language-Model-on-Graphs - A curated list of papers and resources based on "Large Language Models on Graphs: A Comprehensive Survey".
