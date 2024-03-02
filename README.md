@@ -1,5 +1,6 @@
 # llmgraph
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![PyPI version](https://badge.fury.io/py/llmgraph.svg?1)](https://badge.fury.io/py/llmgraph)
 [![build](https://github.com/dylanhogg/llmgraph/actions/workflows/python-poetry-app.yml/badge.svg)](https://github.com/dylanhogg/llmgraph/actions/workflows/python-poetry-app.yml)
 [![Latest Tag](https://img.shields.io/github/v/tag/dylanhogg/llmgraph)](https://github.com/dylanhogg/llmgraph/tags)
