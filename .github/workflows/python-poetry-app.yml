@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main"]
   pull_request:
-    # This triggers the workflow on pull request events for any branch
+    branches: ["main"]
 
 permissions:
   contents: read
