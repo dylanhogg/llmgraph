@@ -34,6 +34,14 @@ poetry-show-tree:
 poetry-gen-requirements:
 	poetry export --output requirements.txt
 
+poetry-update:
+	# 1. Update pyproject.toml (requires plugin poetry-plugin-up as of March 2024)
+	# https://github.com/MousaZeidBaker/poetry-plugin-up
+	# One time: poetry self add poetry-plugin-up
+	poetry up --latest
+	# 2. Update poetry.lock
+	poetry update
+
 test:
 	poetry run coverage run -m pytest -vvv -s ./tests
 	poetry run coverage report
