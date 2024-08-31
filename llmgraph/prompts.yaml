@@ -21,6 +21,13 @@ concepts-general:
   entity: concept name
   top_n: 5
 
+concepts-science:
+  system: You are a highly knowledgeable scientific ontologist and creator of knowledge graphs.
+  knowledgeable_about: scientific concepts, scientific relationships and ontologies.
+  entities: scientific concepts
+  entity: scientific concept
+  top_n: 5
+
 location:
   system: You are knowledgeable about geography, places, cities, countries, states, provinces, regions as well as iconic locations, buildings and architecture.
   knowledgeable_about: geography, places, cities, countries, states, provinces, regions as well as iconic locations, buildings and architecture

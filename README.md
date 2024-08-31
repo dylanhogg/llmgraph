@@ -25,7 +25,7 @@ For a background on knowledge graphs see a [youtube overview by Computerphile](h
 - Many entity types and relationships supported by [customised prompts](https://github.com/dylanhogg/llmgraph/blob/main/llmgraph/prompts.yaml).
 - Cache support to iteratively grow a knowledge graph, efficiently.
 - Outputs `total tokens` used to understand LLM costs (even though a default run is only about 1 cent).
-- Customisable model (default is OpenAI `gpt-3.5-turbo` for speed and cost).
+- Customisable model (default is OpenAI `gpt-4o-mini` for speed and cost).
 
 ## Installation
 
@@ -61,7 +61,7 @@ llmgraph machine-learning "https://en.wikipedia.org/wiki/Artificial_intelligence
 
 This example creates a 3 level graph, based on the given start node `Artificial Intelligence`.
 
-By default OpenAI is used and you will need to set an environment variable '`OPENAI_API_KEY`' prior to running. See the [OpenAI docs](https://platform.openai.com/docs/quickstart/step-2-setup-your-api-key) for more info. The `total tokens used` is output as the run progresses. For reference this 3 level example used a total of 7,650 gpt-3.5-turbo tokens, which is approx 1.5 cents as of Oct 2023.
+By default OpenAI is used and you will need to set an environment variable '`OPENAI_API_KEY`' prior to running. See the [OpenAI docs](https://platform.openai.com/docs/quickstart/step-2-setup-your-api-key) for more info. The `total tokens used` is output as the run progresses. For reference this 3 level example used a total of 7,650 gpt-4o-mini tokens, which is approx 1.5 cents as of Oct 2023.
 
 You can also specify a different LLM provider, including running with a local [ollama](https://github.com/jmorganca/ollama) model. You should be able to specify anything supported by [LiteLLM](https://github.com/BerriAI/litellm) as described here: https://docs.litellm.ai/docs/providers. Note that the prompts to extract related entities were tested with OpenAI and may not work as well with other models.
 
@@ -77,6 +77,7 @@ The `entity_type` sets the LLM prompt used to find related entities to include i
 - `book`
 - `computer-game`
 - `concepts-general`
+- `concepts-science`
 - `creative-general`
 - `documentary`
 - `food`
@@ -99,7 +100,7 @@ The `entity_type` sets the LLM prompt used to find related entities to include i
 - `--levels` (INTEGER): Number of levels deep to construct from the central root entity [default: 2]
 - `--max-sum-total-tokens` (INTEGER): Maximum sum of tokens for graph generation [default: 200000]
 - `--output-folder` (TEXT): Folder location to write outputs [default: ./_output/]
-- `--llm-model` (TEXT): The model name [default: gpt-3.5-turbo]
+- `--llm-model` (TEXT): The model name [default: gpt-4o-mini]
 - `--llm-temp` (FLOAT): LLM temperature value [default: 0.0]
 - `--llm-base-url` (TEXT): LLM will use custom base URL instead of the automatic one [default: None]
 - `--version`: Display llmgraph version and exit.
@@ -147,7 +148,7 @@ Format your response in json array format as an array with column names: 'name',
 Example response: {{{{"name": "Example {entity}","wikipedia_link": "https://en.wikipedia.org/wiki/Example_{entity_underscored}","reason_for_similarity": "Reason for similarity","similarity": 0.5}}}}
 ```
 
-It works well on the primary tested LLM, being OpenAI gpt-3.5-turbo. Results are ok, but not as good using Llama2. The prompt source of truth and additional details can be see in [prompts.yaml](https://github.com/dylanhogg/llmgraph/blob/main/llmgraph/prompts.yaml).
+It works well on the primary tested LLM, being OpenAI gpt-4o-mini. Results are ok, but not as good using Llama2. The prompt source of truth and additional details can be see in [prompts.yaml](https://github.com/dylanhogg/llmgraph/blob/main/llmgraph/prompts.yaml).
 
 Each entity type has custom placeholders, for example `concepts-general` and `documentary`:
 
