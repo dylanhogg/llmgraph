@@ -77,6 +77,7 @@ The `entity_type` sets the LLM prompt used to find related entities to include i
 - `book`
 - `computer-game`
 - `concepts-general`
+- `concepts-science`
 - `creative-general`
 - `documentary`
 - `food`
