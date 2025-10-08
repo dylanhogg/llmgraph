@@ -1,5 +1,5 @@
 package_name = "llmgraph"
-version = "1.3.2"
+version = "1.4.0"
 prompts_yaml_location = "prompts.yaml"
 
 default_llm_model = "gpt-4o-mini"

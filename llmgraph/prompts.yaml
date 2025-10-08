@@ -126,6 +126,13 @@ automobile:
   entity: automobile model
   top_n: 5
 
+location-australia:
+  system: You are an expert in geography, locations, cities, states, regions, and places in Australia.
+  knowledgeable_about: geography, locations and places in Australia.
+  entities: locations, cities, states, regions and places in Australia
+  entity: location in Australia
+  top_n: 5
+
 unit_test1:
   system: You are an expert test driven developer.
   knowledgeable_about: unit tests and testing frameworks
