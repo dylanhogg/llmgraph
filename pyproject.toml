@@ -57,7 +57,7 @@ target-version = ['py38']
 
 [tool.ruff]
 # https://docs.astral.sh/ruff/rules/
-select = [
+lint.select = [
     "E",   # pycodestyle errors
     "W",   # pycodestyle warnings
     "F",   # pyflakes
@@ -66,12 +66,12 @@ select = [
     "B",   # flake8-bugbear
     "C90", # mccabe complexity
 ]
-ignore = [
+lint.ignore = [
     "E501", # line too long, handled by black
     "D203", # 1 blank line required before class docstring
 ]
+lint.fixable = ["ALL"]
+lint.unfixable = []
 line-length = 120
 extend-exclude = [".joblib_cache"]
-fixable = ["ALL"]
-unfixable = []
 target-version = "py38"
