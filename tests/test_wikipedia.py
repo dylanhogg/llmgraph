@@ -14,8 +14,7 @@ def test_restapi_no_redirect_page():
         assert canonical == page
         assert response_json["titles"]["normalized"] == page.replace("_", " ")
         assert normalized == page.replace("_", " ")
-        assert "content-location" in headers
-        assert f"https://en.wikipedia.org/api/rest_v1/page/summary/{page}" == headers["content-location"]
+        assert page == response_json["titles"]["canonical"]
 
     page = "Neural_network"  # Page is direct, no redirect required
 
@@ -46,9 +45,9 @@ def test_restapi_redirect_page():
     assert canonical == redirect_to_page
     assert response_json["titles"]["normalized"] == redirect_to_page.replace("_", " ")
     assert normalized == redirect_to_page.replace("_", " ")
-    assert "content-location" in headers
-    assert f"https://en.wikipedia.org/api/rest_v1/page/summary/{page}" != headers["content-location"]
-    assert f"https://en.wikipedia.org/api/rest_v1/page/summary/{redirect_to_page}" == headers["content-location"]
+    assert "content-location" not in headers
+    assert page != response_json["titles"]["canonical"]
+    assert redirect_to_page == response_json["titles"]["canonical"]
     assert expected_text in summary
     assert response_json["titles"]["canonical"] != page
     assert response_json["titles"]["canonical"] == redirect_to_page
@@ -56,12 +55,18 @@ def test_restapi_redirect_page():
 
     status_code, response_json, canonical, normalized, summary, headers = wikipedia._rest_v1_summary(
         "https://en.wikipedia.org/wiki/" + page, redirect=False
-    )  # redirect=False useless? Why no 304 status?
+    )
     assert status_code == 200
-    assert response_json == {}
-    assert canonical == ""
-    assert summary == ""
-    assert "content-location" not in headers
+    assert response_json != {}
+    # NOTE: Oct 2025: Now redirect=False calls return the resolved page in json payload, as per above
+    assert canonical != page
+    assert canonical == redirect_to_page
+    assert response_json["titles"]["normalized"] == redirect_to_page.replace("_", " ")
+    assert normalized == redirect_to_page.replace("_", " ")
+    assert expected_text in summary
+    assert response_json["titles"]["canonical"] != page
+    assert response_json["titles"]["canonical"] == redirect_to_page
+    assert canonical == redirect_to_page
 
 
 def test_get_resolved_wiki_page():
@@ -80,6 +85,7 @@ def test_get_resolved_wiki_page():
         )
         # NOTE: Oct 2025. Key "content-location" is now missing. We can now get resolved title from json after auto redirect
         # resolved = headers["content-location"].replace("https://en.wikipedia.org/api/rest_v1/page/summary/", "")  # Oct 2025: Key now missing
+        assert "content-location" not in headers
         resolved = response_json["titles"]["canonical"]  # Oct 2025: Get resolved title from json
 
         return status_code, resolved
