@@ -40,10 +40,6 @@ def open_in_browser(concept_output_folder: Path):
 def run(
     entity_type: Annotated[str, typer.Argument(help="Entity type (e.g. movie)")],
     entity_wikipedia: Annotated[str, typer.Argument(help="Full wikipedia link to root entity")],
-    version: Annotated[
-        bool,
-        typer.Option(False, "--version", help="Display version", callback=version_callback, is_eager=True),
-    ],
     entity_root: Annotated[
         str, typer.Option(help="Optional root entity name override if different from wikipedia page title")
     ] = None,
@@ -54,6 +50,10 @@ def run(
     llm_temp: Annotated[float, typer.Option(help="LLM temperature value")] = consts.default_llm_temp,
     llm_base_url: Annotated[str, typer.Option(help="LLM will use custom base URL instead of the automatic one")] = None,
     allow_user_input: Annotated[bool, typer.Option(help="Allow command line user input")] = True,
+    version: Annotated[
+        bool,
+        typer.Option(False, "--version", help="Display version", callback=version_callback, is_eager=True),
+    ] = False,
 ) -> None:
     """
     Create knowledge graphs with LLMs
