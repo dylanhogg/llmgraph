@@ -78,14 +78,19 @@ def test_get_resolved_wiki_page():
         status_code, response_json, canonical, normalized, summary, headers = wikipedia._rest_v1_summary(
             "https://en.wikipedia.org/wiki/" + page, redirect=True
         )
-        resolved = headers["content-location"].replace("https://en.wikipedia.org/api/rest_v1/page/summary/", "")
-        return resolved
+        # NOTE: Oct 2025. Key "content-location" is now missing. We can now get resolved title from json after auto redirect
+        # resolved = headers["content-location"].replace("https://en.wikipedia.org/api/rest_v1/page/summary/", "")  # Oct 2025: Key now missing
+        resolved = response_json["titles"]["canonical"]  # Oct 2025: Get resolved title from json
 
-    for page, resolved in page_resolved:
-        assert resolved == _resolve(page)
+        return status_code, resolved
+
+    for page, expected_resolved in page_resolved:
+        status_code, actual_resolved = _resolve(page)
+        assert status_code == 200
+        assert expected_resolved == actual_resolved
 
 
-# NOTES:
+# NOTES: (Old pre-Oct 2025 changes for auto redirect that has new page in json payload)
 # https://en.wikipedia.org/api/rest_v1/#/Page%20content/get_page_title__title_
 
 # https://en.wikipedia.org/api/rest_v1/page/title/Neural_network
