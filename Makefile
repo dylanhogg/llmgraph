@@ -1,5 +1,15 @@
 run:
-	poetry run llmgraph concepts-general https://en.wikipedia.org/wiki/Large_language_model --levels 2 --llm-model gpt-3.5-turbo --llm-temp 0.0
+	# poetry run llmgraph concepts-general https://en.wikipedia.org/wiki/Large_language_model --levels 2 --llm-model gpt-5-mini --llm-temp 0.0
+	# poetry run llmgraph concepts-general https://en.wikipedia.org/wiki/Large_language_model
+	# poetry run llmgraph concepts-science https://en.wikipedia.org/wiki/Large_language_model --levels 2 --llm-model gpt-5-mini --llm-temp 0.0
+	# poetry run llmgraph machine-learning "https://en.wikipedia.org/wiki/Vision_transformer" --levels 4 --llm-model gpt-5-mini
+	poetry run llmgraph machine-learning "https://en.wikipedia.org/wiki/Graph_neural_network" --levels 2 --llm-model gpt-5-mini
+	# poetry run llmgraph concepts-science "https://en.wikipedia.org/wiki/Abiogenesis" --levels 4 --llm-model gpt-5-mini
+	# poetry run llmgraph concepts-science "https://en.wikipedia.org/wiki/Artificial_life" --levels 4 --llm-model gpt-5-mini
+	# poetry run llmgraph concepts-science "https://en.wikipedia.org/wiki/Cellular_automaton" --levels 6 --llm-model gpt-5-mini --max-sum-total-tokens 500000
+	# poetry run llmgraph concepts-general "https://en.wikipedia.org/wiki/Free_energy_principle" --levels 4 --llm-model gpt-5-mini
+	# poetry run llmgraph concepts-general "https://en.wikipedia.org/wiki/Free_energy_principle" --levels 5 --llm-model gpt-5-mini
+	# poetry run llmgraph location-australia https://en.wikipedia.org/wiki/Richmond,_Victoria --levels 5 --llm-model gpt-5-mini --llm-temp 0.0
 
 build:
 	poetry build
@@ -49,6 +59,10 @@ test:
 test-selected:
 	poetry run coverage run -m pytest -vvv -s ./tests -k test_console
 	poetry run coverage report
+
+precommit:
+	poetry run ruff check . --fix
+	poetry run black llmgraph tests
 
 black-check:
 	poetry run black llmgraph tests --check --verbose
