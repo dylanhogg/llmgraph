@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "llmgraph"
-version = "1.4.0" # NOTE: sync with consts.py
+version = "1.4.1" # NOTE: sync with consts.py
 description = "Create knowledge graphs with LLMs"
 authors = ["Dylan Hogg <dylanhogg@gmail.com>"]
 license = "MIT"
