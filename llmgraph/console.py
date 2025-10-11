@@ -52,7 +52,7 @@ def run(
     allow_user_input: Annotated[bool, typer.Option(help="Allow command line user input")] = True,
     version: Annotated[
         bool,
-        typer.Option(False, "--version", help="Display version", callback=version_callback, is_eager=True),
+        typer.Option(help="Display version", callback=version_callback, is_eager=True),
     ] = False,
 ) -> None:
     """
