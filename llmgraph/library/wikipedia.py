@@ -16,7 +16,8 @@ def _rest_v1_summary(url: str, redirect: bool = True):
 
     redirect = "true" if redirect else "false"
     rest_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{page_title}?redirect={redirect}"
-    response = requests.get(rest_url)
+    headers = {"User-Agent": "llmgraph"}
+    response = requests.get(rest_url, headers=headers)
     status_code = response.status_code
     headers = response.headers
     if status_code == 200:

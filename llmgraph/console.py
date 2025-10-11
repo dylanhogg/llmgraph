@@ -2,7 +2,6 @@ import os
 import webbrowser
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 import typer
 from omegaconf import OmegaConf
@@ -52,8 +51,9 @@ def run(
     llm_base_url: Annotated[str, typer.Option(help="LLM will use custom base URL instead of the automatic one")] = None,
     allow_user_input: Annotated[bool, typer.Option(help="Allow command line user input")] = True,
     version: Annotated[
-        Optional[bool], typer.Option("--version", help="Display llmgraph version", callback=version_callback)
-    ] = None,
+        bool,
+        typer.Option(help="Display version", callback=version_callback, is_eager=True),
+    ] = False,
 ) -> None:
     """
     Create knowledge graphs with LLMs
@@ -116,7 +116,7 @@ def run(
         )
 
         took = datetime.now() - start
-        concept_output_folder = utils.get_output_path(output_folder, entity_type, entity_root)
+        concept_output_folder = utils.get_output_path(output_folder, entity_type, entity_root, llm_model)
         print("")
         print(f"[bold green]llmgraph finished, took {took.total_seconds()}s.[/bold green]")
         print(f"Output written to folder '{concept_output_folder}' which includes, for each level:")
