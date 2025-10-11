@@ -94,8 +94,8 @@ def _add_visual_attributes(G: nx.DiGraph):
     return G
 
 
-def get_output_path(output_folder: str, entity_type: str, entity_root: str):
-    output_path = Path(output_folder) / entity_type / _clean_entity_name(entity_root)
+def get_output_path(output_folder: str, entity_type: str, entity_root: str, llm_model: str):
+    output_path = Path(output_folder) / entity_type / _clean_entity_name(entity_root) / _clean_entity_name(llm_model)
     Path(output_path).mkdir(parents=True, exist_ok=True)
     return output_path
 
@@ -116,7 +116,7 @@ def write_html(
     processed_only: bool,
     print_output: bool = False,
 ):
-    output_path = get_output_path(output_folder, entity_type, entity_root)
+    output_path = get_output_path(output_folder, entity_type, entity_root, llm_config.model)
     file_name = _get_filename(entity_type, entity_root, level, llm_config, "html")
 
     G = _add_visual_attributes(G)
@@ -145,7 +145,7 @@ def write_html(
 def write_graphml(
     output_folder: str, entity_type: str, entity_root: str, level: int, G: nx.DiGraph, llm_config: DictConfig
 ):
-    output_path = get_output_path(output_folder, entity_type, entity_root)
+    output_path = get_output_path(output_folder, entity_type, entity_root, llm_config.model)
     nx.write_graphml(
         G,
         str(output_path / _get_filename(entity_type, entity_root, level, llm_config, "graphml")),

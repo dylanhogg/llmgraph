@@ -116,7 +116,7 @@ def run(
         )
 
         took = datetime.now() - start
-        concept_output_folder = utils.get_output_path(output_folder, entity_type, entity_root)
+        concept_output_folder = utils.get_output_path(output_folder, entity_type, entity_root, llm_model)
         print("")
         print(f"[bold green]llmgraph finished, took {took.total_seconds()}s.[/bold green]")
         print(f"Output written to folder '{concept_output_folder}' which includes, for each level:")
