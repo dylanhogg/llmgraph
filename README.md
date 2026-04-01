@@ -71,6 +71,15 @@ Local [ollama/llama2](https://ollama.ai/library/llama2) model example:
 llmgraph machine-learning "https://en.wikipedia.org/wiki/Artificial_intelligence" --levels 3 --llm-model ollama/llama2 --llm-base-url http://localhost:<your_port>
 ```
 
+[MiniMax](https://www.minimaxi.com/) models (MiniMax-M2.7, MiniMax-M2.7-highspeed, MiniMax-M2.5, MiniMax-M2.5-highspeed) are supported with the `minimax/` prefix. Set the `MINIMAX_API_KEY` environment variable and use the `minimax/<model>` notation:
+
+```bash
+export MINIMAX_API_KEY=your_api_key_here
+llmgraph machine-learning "https://en.wikipedia.org/wiki/Artificial_intelligence" --levels 3 --llm-model minimax/MiniMax-M2.7
+```
+
+llmgraph automatically routes `minimax/` models via MiniMax's OpenAI-compatible API endpoint and enforces MiniMax's temperature range `(0.0, 1.0]`.
+
 The `entity_type` sets the LLM prompt used to find related entities to include in the graph. The full list can be seen in [prompts.yaml](https://github.com/dylanhogg/llmgraph/blob/main/llmgraph/prompts.yaml) and include the following entity types:
 
 - `automobile`
